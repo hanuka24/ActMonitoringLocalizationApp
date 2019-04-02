@@ -1,31 +1,105 @@
 package com.example.actmonitoringlocalizatin;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import org.w3c.dom.Text;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
+
+    private SensorManager mSensorManager;
+    private Sensor mSensorAcc;
+
+    private String tag = "DEBUG";
+
+    private int fileCount;
+
+    // TextViews to display current sensor values
+    private TextView mTextSensorAccX;
+    private TextView mTextSensorAccY;
+    private TextView mTextSensorAccZ;
+
+    private TextView mTextDebug;
+
+    private Button mNewFileButton;
+    private Button mStartButton;
+
+    private boolean enableSensor;
+
+     private FileOutputStream fOutStream;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        // Here, thisActivity is the current activity
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        Log.i(tag, "In the onCreate() event");
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        mTextSensorAccX = (TextView) findViewById(R.id.label_acc_x);
+        mTextSensorAccY = (TextView) findViewById(R.id.label_acc_y);
+        mTextSensorAccZ = (TextView) findViewById(R.id.label_acc_z);
+        mTextDebug = (TextView) findViewById(R.id.debug);
+
+        mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        mNewFileButton = findViewById(R.id.newfile_button);
+        mStartButton = findViewById(R.id.start_button);
+        mNewFileButton.setOnClickListener(this);
+        mStartButton.setOnClickListener(this);
+
+        enableSensor = true;
+        fileCount = 0;
+
+        if (mSensorAcc == null) {
+            mTextSensorAccX.setText(getResources().getString(R.string.error_no_sensor));
+            mTextSensorAccY.setText(getResources().getString(R.string.error_no_sensor));
+            mTextSensorAccZ.setText(getResources().getString(R.string.error_no_sensor));
+        }
+        Log.i(tag, "uuuuuh the onCreate() event");
     }
 
     @Override
@@ -48,5 +122,121 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int sensorType = event.sensor.getType();
+
+        double x = event.values[0];
+        double y = event.values[1];
+        double z = event.values[2];
+
+        switch (sensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                mTextSensorAccX.setText(getResources().getString(R.string.label_acc_x, x));
+                mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
+                mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
+
+                addDataToProcess (x, y, z);
+            default:
+                // do nothing
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mSensorManager.unregisterListener(this);
+    }
+
+    private void toggleSensor() {
+        debug("Start monitoring");
+
+        if (mSensorAcc != null) {
+            if(enableSensor){
+                mStartButton.setText("Stop Activity");
+                mSensorManager.registerListener(this, mSensorAcc,
+                        SensorManager.SENSOR_DELAY_NORMAL);
+            }
+            else
+            {
+                mStartButton.setText("Start Activity");
+                mSensorManager.unregisterListener(this, mSensorAcc);
+                closeFile();
+            }
+            enableSensor = !enableSensor;
+        }
+    }
+
+    private void addDataToProcess(double x, double y, double z)
+    {
+        String text = String.format("%.2f;%.2f;%.2f\n", x, y, z);
+
+        try{
+            fOutStream.write(text.getBytes());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        } }
+
+    private void newFile() {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File (root, "Activity" + fileCount + ".txt");
+        fileCount++;
+        debug("New File:" + file.toString());
+        if (file.exists ())
+            file.delete ();
+        try {
+            fOutStream = new FileOutputStream(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeFile()
+    {
+        debug("Close File");
+        try {
+            fOutStream.flush();
+            fOutStream.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.newfile_button:
+                newFile();
+                break;
+            case R.id.start_button:
+                toggleSensor();
+                break;
+            default:
+                //do nothing
+
+        }
+    }
+
+    private void debug(String msg)
+    {
+        Log.d(tag, msg);
+        mTextDebug.setText(msg);
     }
 }
