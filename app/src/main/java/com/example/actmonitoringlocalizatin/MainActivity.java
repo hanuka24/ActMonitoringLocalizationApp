@@ -158,20 +158,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onStop() {
         super.onStop();
-        mSensorManager.unregisterListener(this);
+        debug("App stopped");
     }
 
     private void toggleSensor() {
-        debug("Start monitoring");
-
         if (mSensorAcc != null) {
             if(enableSensor){
+                debug("Start monitoring");
                 mStartButton.setText("Stop Activity");
                 mSensorManager.registerListener(this, mSensorAcc,
                         SensorManager.SENSOR_DELAY_NORMAL);
             }
             else
             {
+                debug("Stop monitoring");
                 mStartButton.setText("Start Activity");
                 mSensorManager.unregisterListener(this, mSensorAcc);
                 closeFile();
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void debug(String msg)
     {
-        Log.d(tag, msg);
+        Log.wtf(tag, msg);
         mTextDebug.setText(msg);
     }
 }
