@@ -2,7 +2,6 @@ package com.example.actmonitoringlocalizatin;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,8 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,10 +20,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.DataOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String tag = "DEBUG";
 
     private int fileCount;
+    private int fileCountWalk;
+    private int fileCountStand;
+    private int fileCountSit;
 
     // TextViews to display current sensor values
     private TextView mTextSensorAccX;
@@ -47,10 +46,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private TextView mTextDebug;
 
-    private Button mNewFileButton;
-    private Button mStartButton;
+    private Button mstartWalkButton;
+    private Button mstartStandButton;
+    private Button mstartSitButton;
 
     private boolean enableSensor;
+
+    private String mselectedButton;
 
     private FileOutputStream fOutStream;
 
@@ -80,14 +82,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mTextDebug = (TextView) findViewById(R.id.debug);
 
         //init Buttons
-        mNewFileButton = findViewById(R.id.newfile_button);
-        mStartButton = findViewById(R.id.start_button);
-        mNewFileButton.setOnClickListener(this);
-        mStartButton.setOnClickListener(this);
+        mstartWalkButton = findViewById(R.id.walk_button);
+        mstartStandButton = findViewById(R.id.stand_up_button);
+        mstartSitButton = findViewById(R.id.sit_down_button);
+        mstartWalkButton.setOnClickListener(this);
+        mstartStandButton.setOnClickListener(this);
+        mstartSitButton.setOnClickListener(this);
 
         //init Variables
         enableSensor = true;
         fileCount = 0;
+        fileCountWalk = 0;
+        fileCountStand = 0;
+        fileCountSit = 0;
         fOutStream = null;
 
         if (mSensorAcc == null) {
@@ -138,35 +145,113 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onStart() {
         super.onStart();
+        getFileCount();
+        debug("App started");
+    }
 
+    private void getFileCount()
+    {
+        DataInputStream fInpStream = null;
+        String root = Environment.getExternalStorageDirectory().toString();
+
+        try {
+            fInpStream = new DataInputStream (new FileInputStream(root));
+            while(fInpStream.available() > 0) {
+                String fileCounters = Integer.toString(fInpStream.read());
+                String[] fileCountersSplit = fileCounters.split(";");
+                fileCountWalk = Integer.valueOf(fileCountersSplit[0]);
+                fileCountStand = Integer.valueOf(fileCountersSplit[1]);
+                fileCountSit = Integer.valueOf(fileCountersSplit[2]);
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         debug("App stopped");
+        saveFileCount("fileCounters");
         //TODO: save state
     }
 
+    private void saveFileCount(String fileName)
+    {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File (root, fileName + ".txt");
+        fileCount++;
+        debug("New File:" + file.toString());
+        if (file.exists ())
+            file.delete ();
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(String.format("%d;%d;%d\n", fileCountWalk, fileCountStand, fileCountSit).getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void toggleSensor() {
-        if(fOutStream != null){
-            if(enableSensor){
-                debug("Start monitoring");
-                mStartButton.setText("Stop Activity");
-                mSensorManager.registerListener(this, mSensorAcc,
-                        SensorManager.SENSOR_DELAY_NORMAL);
-            }
-            else
-            {
-                debug("Stop monitoring");
-                mStartButton.setText("Start Activity");
-                mSensorManager.unregisterListener(this, mSensorAcc);
-                closeFile();
-            }
-            enableSensor = !enableSensor;
+        if(enableSensor){
+            newFile();
+            debug("Start monitoring");
+            setButtonText();
+            mSensorManager.registerListener(this, mSensorAcc,
+                    SensorManager.SENSOR_DELAY_NORMAL);
         }
         else
-            debug("Create File first!");
+        {
+            debug("Stop monitoring");
+            setButtonText();
+            mSensorManager.unregisterListener(this, mSensorAcc);
+            closeFile();
+        }
+        enableSensor = !enableSensor;
+    }
+
+    private void setButtonText()
+    {
+        if(enableSensor)
+        {
+            switch (mselectedButton)
+            {
+                case "walking":
+                    mstartWalkButton.setText("Stop " + mselectedButton);
+                    break;
+                case "standing_up":
+                    mstartStandButton.setText("Stop " + mselectedButton);
+                    break;
+                case "sitting_down":
+                    mstartSitButton.setText("Stop " + mselectedButton);
+                    break;
+                default:
+                    break;
+            }
+        } else
+        {
+            switch (mselectedButton)
+            {
+                case "walking":
+                    mstartWalkButton.setText("Start " + mselectedButton);
+                    break;
+                case "standing_up":
+                    mstartStandButton.setText("Start " + mselectedButton);
+                    break;
+                case "sitting_down":
+                    mstartSitButton.setText("Start " + mselectedButton);
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 
     private void addDataToProcess(double x, double y, double z)
@@ -184,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void newFile() {
 
         String root = Environment.getExternalStorageDirectory().toString();
-        File file = new File (root, "Activity" + fileCount + ".txt");
+        File file = new File (root, mselectedButton + "_" + fileCount + ".txt");
         fileCount++;
         debug("New File:" + file.toString());
         if (file.exists ())
@@ -207,16 +292,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    //Button Clck Handler
+    //Button Click Handler
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.newfile_button:
-                newFile();
-                break;
-            case R.id.start_button:
+            case R.id.walk_button:
+                mselectedButton = "walking";
+                fileCount = fileCountWalk;
                 toggleSensor();
+                fileCountWalk = fileCount;
+                break;
+            case R.id.stand_up_button:
+                mselectedButton = "standing_up";
+                fileCount = fileCountStand;
+                toggleSensor();
+                fileCountStand = fileCount;
+                break;
+            case R.id.sit_down_button:
+                mselectedButton = "sitting_down";
+                fileCount = fileCountSit;
+                toggleSensor();
+                fileCountSit = fileCount;
                 break;
             default:
                 //do nothing

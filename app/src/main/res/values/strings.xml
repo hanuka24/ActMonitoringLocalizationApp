@@ -6,6 +6,7 @@
     <string name="label_acc_x">Acc Sensor: %1$.2f</string>
     <string name="label_acc_y">Acc Sensor: %1$.2f</string>
     <string name="label_acc_z">Acc Sensor: %1$.2f</string>
-    <string name="startButton">Start Activity</string>
-    <string name="fileButton">New File</string>
+    <string name="walk_button">Start walking</string>
+    <string name="stand_up_button">Start standing up</string>
+    <string name="sit_down_button">Start sitting down</string>
 </resources>
