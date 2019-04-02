@@ -52,54 +52,48 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private boolean enableSensor;
 
-     private FileOutputStream fOutStream;
+    private FileOutputStream fOutStream;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        // Here, thisActivity is the current activity
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
-        }
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.i(tag, "In the onCreate() event");
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //Get permission to write to file
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
 
+        //init Sensor
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        //init TextViews
         mTextSensorAccX = (TextView) findViewById(R.id.label_acc_x);
         mTextSensorAccY = (TextView) findViewById(R.id.label_acc_y);
         mTextSensorAccZ = (TextView) findViewById(R.id.label_acc_z);
         mTextDebug = (TextView) findViewById(R.id.debug);
 
-        mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
+        //init Buttons
         mNewFileButton = findViewById(R.id.newfile_button);
         mStartButton = findViewById(R.id.start_button);
         mNewFileButton.setOnClickListener(this);
         mStartButton.setOnClickListener(this);
 
+        //init Variables
         enableSensor = true;
         fileCount = 0;
+        fOutStream = null;
 
         if (mSensorAcc == null) {
-            mTextSensorAccX.setText(getResources().getString(R.string.error_no_sensor));
-            mTextSensorAccY.setText(getResources().getString(R.string.error_no_sensor));
-            mTextSensorAccZ.setText(getResources().getString(R.string.error_no_sensor));
+            mTextDebug.setText("Required sensor not available!");
+            //TODO: close App and notify user
         }
-        Log.i(tag, "uuuuuh the onCreate() event");
     }
 
     @Override
@@ -115,33 +109,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        int sensorType = event.sensor.getType();
-
+        //read sensor data and store to file
         double x = event.values[0];
         double y = event.values[1];
         double z = event.values[2];
 
-        switch (sensorType) {
-            case Sensor.TYPE_ACCELEROMETER:
-                mTextSensorAccX.setText(getResources().getString(R.string.label_acc_x, x));
-                mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
-                mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
+        mTextSensorAccX.setText(getResources().getString(R.string.label_acc_x, x));
+        mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
+        mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
 
-                addDataToProcess (x, y, z);
-            default:
-                // do nothing
-        }
+        addDataToProcess (x, y, z);
     }
 
     @Override
@@ -159,10 +145,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onStop() {
         super.onStop();
         debug("App stopped");
+        //TODO: save state
     }
 
     private void toggleSensor() {
-        if (mSensorAcc != null) {
+        if(fOutStream != null){
             if(enableSensor){
                 debug("Start monitoring");
                 mStartButton.setText("Stop Activity");
@@ -178,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             enableSensor = !enableSensor;
         }
+        else
+            debug("Create File first!");
     }
 
     private void addDataToProcess(double x, double y, double z)
@@ -218,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    //Button Clck Handler
     @Override
     public void onClick(View v) {
 
