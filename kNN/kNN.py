@@ -31,8 +31,14 @@ def main():
 
     for filename in os.listdir('./../Data/'):
         if filename.endswith(".txt"):
-            print "Get Smaples of " + filename
-            activity = filename.split('_')[0]
+            print "Get Samples of " + filename
+            activity = filename.split('_')
+            if len(activity) == 2:
+                activity = activity[0]
+            else:
+                activity = activity[0] + activity[1]
+
+
             columns = ['timestamp', 'x', 'y', 'z', 'sum']
             df = pd.read_csv('./../Data/' + filename, header=None, names=columns, delimiter=';')
 
@@ -40,13 +46,12 @@ def main():
             df['y'] = df['y'].astype('float64')
             df['z'] = df['z'].astype('float64')
 
-            # compute squared average of all 3 axes
-            df = computeSum(df)
             print tabulate(df)
 
             # do signal processing
             linearize(df, WINDOW_WIDTH)
             smooth(df)
+            df = computeSum(df) #compute squared average of all 3 axes
 
             # split into frames
             for i in range(0, len(df) - (len(df) % NUM_SAMPLES), NUM_SAMPLES):
