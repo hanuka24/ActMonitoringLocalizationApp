@@ -332,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 mselectedButton = "walking";
                 fileCount = fileCountWalk;
                 toggleSensor();
-                setButtonText();
                 fileCountWalk = fileCount;
                 break;
             case R.id.stand_up_button:
