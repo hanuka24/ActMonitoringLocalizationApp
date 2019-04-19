@@ -22,72 +22,6 @@ import random
 #inspired by: https://medium.com/@curiousily/human-activity-recognition-using-lstms-on-android-tensorflow-for-hackers-part-vi-492da5adef64
 
 
-'''
-    for filename in os.listdir('./../Data/'):
-        if filename.endswith(".txt"):
-            print "Get Samples of " + filename
-            activity = filename.split('_')
-            if len(activity) == 2:
-                activity = activity[0]
-            else:
-                activity = activity[0] + activity[1]
-
-
-            columns = ['timestamp', 'x', 'y', 'z', 'sum']
-            df = pd.read_csv('./../Data/' + filename, header=None, names=columns, delimiter=';')
-
-            df['x'] = df['x'].astype('float64')
-            df['y'] = df['y'].astype('float64')
-            df['z'] = df['z'].astype('float64')
-
-#            print tabulate(df)
-
-
-            plt.plot(df['timestamp'], df['x'], color = '0.75')
-            plt.plot(df['timestamp'], df['y'], color = '0.75')
-            plt.plot(df['timestamp'], df['z'], color = '0.75')
-
-            # do signal processing
-            linearize(df)
-            smooth(df)
-            df = computeSum(df) #compute squared average of all 3 axes
-
-            plt.plot(df['timestamp'], df['x'], 'r')
-            plt.plot(df['timestamp'], df['y'], 'b')
-            plt.plot(df['timestamp'], df['z'], 'g')
-            plt.plot(df['timestamp'], df['sum'], 'y')
-            plt.title(activity)
-          #  plt.show()
-
-            # Extract features
-
-            list_mean = [statistics.mean(df['x']), statistics.mean(df['y']), statistics.mean(df['z']), statistics.mean(df['sum'])]
-            list_max = []
-            list_min = [min(df['x']), min(df['y']), min(df['z']), min(df['sum'])]
-            list_diff = [min(df['x']) - max(df['x']), min(df['y']) - max(df['y']), min(df['z']) - max(df['z']), min(df['sum'])- max(df['sum']),]
-            #print(df['sum'].min().index)
-            df[['sum']].idxmin()
-            print(activity)
-           # wuant = df.quantile(.8)
-           #print(wuant)
-            print(df['sum'].mean())
-          #  print(df.mean())
-          #  print(df.max())
-          #  print(df.min())
-
-            if(random.random() < SPLIT):
-                trainingSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(),df['sum'].quantile(0.8), df['sum'].quantile(0.15), df[['sum']].idxmax(), activity])
-            #  trainingSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(), df[['sum']].idxmax(), activity])
-            else:
-              # testSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(),df[['sum']].idxmax(), activity])
-                testSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(),df['sum'].quantile(0.8), df['sum'].quantile(0.15), df[['sum']].idxmax(), activity])
-
-            continue
-        else:
-            continue
-'''
-
-
 def main():
 
     NUM_SAMPLES = 70 #50 samples per frame
@@ -97,17 +31,70 @@ def main():
     trainingSet = []
     testSet = []
 
-    columns = ['min', 'max', 'index_max', 'mean', 'activity']
-    df = pd.read_csv('./../Data/Trainingsdata.txt', header=None, names=columns, delimiter=';')
+    for filename in os.listdir('./../Data/'):
+        if filename.endswith(".txt") and filename != "Trainingsdata.txt":
+            print "Get Samples of " + filename
+            activity = filename.split('_')
+            if len(activity) == 2:
+                activity = activity[0]
+            else:
+                activity = activity[0] + activity[1]
 
-    for index, row in df.iterrows():
-        if (random.random() < SPLIT):
-            trainingSet.append([row['min'], row['max'], row['index_max'], row['mean'], row['activity']])
-    #   trainingSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(), df[['sum']].idxmax(), activity])
+            columns = ['timestamp', 'x', 'y', 'z', 'sum']
+            df = pd.read_csv('./../Data/' + filename, header=None, names=columns, delimiter=';')
+
+            df['x'] = df['x'].astype('float64')
+            df['y'] = df['y'].astype('float64')
+            df['z'] = df['z'].astype('float64')
+
+            #            print tabulate(df)
+
+            plt.plot(df['timestamp'], df['x'], color='0.75')
+            plt.plot(df['timestamp'], df['y'], color='0.75')
+            plt.plot(df['timestamp'], df['z'], color='0.75')
+
+            # do signal processing
+            linearize(df)
+            smooth(df)
+            df = computeSum(df)  # compute squared average of all 3 axes
+
+            plt.plot(df['timestamp'], df['x'], 'r')
+            plt.plot(df['timestamp'], df['y'], 'b')
+            plt.plot(df['timestamp'], df['z'], 'g')
+            plt.plot(df['timestamp'], df['sum'], 'y')
+            plt.title(activity)
+            #  plt.show()
+
+            # Extract features
+
+            list_mean = [statistics.mean(df['x']), statistics.mean(df['y']), statistics.mean(df['z']),
+                         statistics.mean(df['sum'])]
+            list_max = []
+            list_min = [min(df['x']), min(df['y']), min(df['z']), min(df['sum'])]
+            list_diff = [min(df['x']) - max(df['x']), min(df['y']) - max(df['y']), min(df['z']) - max(df['z']),
+                         min(df['sum']) - max(df['sum']), ]
+            # print(df['sum'].min().index)
+            df[['sum']].idxmin()
+            print(activity)
+            # wuant = df.quantile(.8)
+            # print(wuant)
+            print(df['sum'].mean())
+            #  print(df.mean())
+            #  print(df.max())
+            #  print(df.min())
+
+            if (random.random() < SPLIT):
+                trainingSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(), df['sum'].quantile(0.8),
+                                    df['sum'].quantile(0.15), df[['sum']].idxmax(), activity])
+            #  trainingSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(), df[['sum']].idxmax(), activity])
+            else:
+                # testSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(),df[['sum']].idxmax(), activity])
+                testSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(), df['sum'].quantile(0.8),
+                                df['sum'].quantile(0.15), df[['sum']].idxmax(), activity])
+
+            continue
         else:
-        # testSet.append([df['sum'].mean(), df['sum'].min(), df['sum'].max(),df[['sum']].idxmax(), activity])
-            testSet.append([row['min'], row['max'], row['index_max'], row['mean'], row['activity']])
-
+            continue
 
     print 'Train set: ' + repr(len(trainingSet))
     print 'Test set: ' + repr(len(testSet))

@@ -11,3 +11,10 @@
 /build
 /captures
 .externalNativeBuild
+ActivityMonitoring/local.properties
+ActivityMonitoring/.idea/caches
+ActivityMonitoring/.idea/libraries
+ActivityMonitoring/.idea/modules.xml
+ActivityMonitoring/.idea/workspace.xml
+ActivityMonitoring/.idea/navEditor.xml
+ActivityMonitoring/.idea/assetWizardSettings.xml
