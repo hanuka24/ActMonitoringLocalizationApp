@@ -139,7 +139,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         debug("Start monitoring");
         accSamples.clear();
         mstartMonitoringButton.setEnabled(false);
-        mstartMonitoringButton.setBackgroundColor(Color.WHITE);
+        mstartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_grey);
         mSensorManager.registerListener(this, mSensorAcc,
                 SensorManager.SENSOR_DELAY_GAME);
     }
@@ -148,7 +148,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     {
         debug("Stop monitoring");
         mstartMonitoringButton.setEnabled(true);
-        mstartMonitoringButton.setBackgroundColor(Color.GREEN);
+        mstartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_green);
         mSensorManager.unregisterListener(this, mSensorAcc);
         predictActivity();
     }
@@ -166,13 +166,18 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
         ArrayList<Features> neighbors = findKNearestNeighbors(trainingData, accSamples.features, 3);
 
-        debug("Neighbor1: " + neighbors.get(0).activity + "\nNeighbor2: " + neighbors.get(1).activity
-        + "\nNeighbor3: " + neighbors.get(2).activity);
+        if(neighbors == null)
+        {
+            debug("Not enough trainingsdata is available");
+        }else {
 
-        String activity_pred = classify(neighbors);
+            debug("Neighbor1: " + neighbors.get(0).activity + "\nNeighbor2: " + neighbors.get(1).activity
+                    + "\nNeighbor3: " + neighbors.get(2).activity);
 
-        mPredictedActivity.setText(getResources().getString(R.string.predicted_activity, activity_pred));
+            String activity_pred = classify(neighbors);
 
+            mPredictedActivity.setText(getResources().getString(R.string.predicted_activity, activity_pred));
+        }
 
     }
 

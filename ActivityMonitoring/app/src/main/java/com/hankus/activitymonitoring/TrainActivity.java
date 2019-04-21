@@ -3,6 +3,7 @@ package com.hankus.activitymonitoring;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -145,7 +146,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         if(!sensorEnabled) {
             debug("Start monitoring");
             accData.clear();
-            setButtonText();
+            setButtonText("begin");
             mSensorManager.registerListener(this, mSensorAcc,
                     SensorManager.SENSOR_DELAY_GAME);
             sensorEnabled = true;
@@ -158,19 +159,31 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mSensorManager.unregisterListener(this, mSensorAcc);
         sensorEnabled = false;
         saveData();
-        setButtonText();
+        setButtonText("end");
     }
 
-    private void setButtonText() {
+    private void setButtonText(String control) {
+        int background = 0;
+        if(control.equals("begin"))
+        {
+            background = R.drawable.rounded_button_grey;
+        }
+        else if(control.equals("end"))
+        {
+            background = R.drawable.rounded_button_blue;
+        }
         switch (currentActivity) {
             case "walking":
-                mstartSitButton.setActivated(!sensorEnabled);
+                mstartWalkButton.setActivated(!sensorEnabled);
+                mstartWalkButton.setBackgroundResource(background);
                 break;
             case "standing_up":
                 mstartStandButton.setActivated(!sensorEnabled);
+                mstartStandButton.setBackgroundResource(background);
                 break;
             case "sitting_down":
                 mstartSitButton.setActivated(!sensorEnabled);
+                mstartSitButton.setBackgroundResource(background);
                 break;
             default:
                 break;

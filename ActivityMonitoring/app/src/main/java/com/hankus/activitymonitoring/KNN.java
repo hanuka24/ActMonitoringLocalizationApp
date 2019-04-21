@@ -12,8 +12,12 @@ import java.util.TreeMap;
 public class KNN {
     // Find K nearest neighbors of testRecord within trainingSet
     static ArrayList<Features> findKNearestNeighbors(ArrayList<Features> trainingSet, Features testRecord, int K){
+        if (trainingSet.size() <= K)
+        {
+            return null;
+        }
         int NumOfTrainingSet = trainingSet.size();
-        assert K <= NumOfTrainingSet : "K is lager than the length of trainingSet!";
+        assert K <= NumOfTrainingSet : "K is larger than the length of trainingSet!";
 
         //Update KNN: take the case when testRecord has multiple neighbors with the same distance into consideration
         //Solution: Update the size of container holding the neighbors

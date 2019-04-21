@@ -55,8 +55,9 @@
 
     <Button
         android:id="@+id/start_activity_monitoring_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="146dp"
+        android:layout_height="74dp"
+        android:background="@drawable/rounded_button_green"
         android:text="@string/start_activity_monitoring_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

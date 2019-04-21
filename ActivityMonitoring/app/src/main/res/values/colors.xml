@@ -3,4 +3,24 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="white">#ffffffff</color>
+    <color name="darkwhite">#ffeeeeee</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="semitransparent">#88000000</color>
+    <color name="orange">#ffff8800</color>
+    <color name="light_orange">#ffe27d18</color>
+    <color name="dark_blue">#990082e8</color>
+    <color name="blue">#990092e8</color>
+    <color name="light_blue">#9900a2e8</color>
+    <color name="black">#ff000000</color>
+    <color name="menuButtonColor">#ffea8e44</color>
+    <color name="dark_red">#aaee2a1c</color>
+    <color name="red">#aafe2b1c</color>
+    <color name="light_red">#aaff2e1c</color>
+    <color name="dark_grey">#aaA9A9A9</color>
+    <color name="grey">#aaC0C0C0</color>
+    <color name="light_grey">#aaD3D3D3</color>
+    <color name="dark_green">#aa94b233</color>
+    <color name="green">#aaa4c639</color>
+    <color name="light_green">#aaadcc4d</color>
 </resources>
