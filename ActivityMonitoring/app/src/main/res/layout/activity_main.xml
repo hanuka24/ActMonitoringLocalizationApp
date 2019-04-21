@@ -33,10 +33,10 @@
 
     <Button
         android:id="@+id/start_training_button"
-        android:layout_width="100dp"
-        android:layout_height="69dp"
-        android:text="@string/start_training_button"
+        android:layout_width="107dp"
+        android:layout_height="73dp"
         android:background="@drawable/rounded_button_blue"
+        android:text="@string/start_training_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.758"
         app:layout_constraintLeft_toLeftOf="parent"
