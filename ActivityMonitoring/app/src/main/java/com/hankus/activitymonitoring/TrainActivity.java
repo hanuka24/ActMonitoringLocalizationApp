@@ -20,9 +20,11 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Calendar;
 
 public class TrainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
@@ -200,7 +202,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 currentActivity);
         debug("Save Data");
         String root = Environment.getExternalStorageDirectory().toString();
-        currentFile = new File (root, "Trainingsdata.txt");
+        currentFile = new File (root, getResources().getString(R.string.file_name));
         try {
             fOutStream = new FileOutputStream(currentFile, true);
             fOutStream.write(data_string.getBytes());
@@ -221,13 +223,32 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         }
     }
 
-    private void deleteLatestSample()
-    {
-        //Todo: reimplement (open file, delete last line)
+    private void deleteLatestSample()  {
         if(currentFile != null && currentFile.exists()) {
-            debug("Delete latest sample: " + currentFile.toString());
-            currentFile.delete();
-            currentFile = null;
+            try{
+                RandomAccessFile f = new RandomAccessFile(currentFile, "rw");
+                long length = f.length() - 1;
+                byte b;
+                do {
+                    length -= 1;
+                    f.seek(length);
+                    b = f.readByte();
+                } while(b != 10 && length > 0);
+                if(length == 0)
+                {
+                    debug("No more samples to delete, deleted File!");
+                    currentFile.delete();
+                    currentFile = null;
+                }else{
+                    debug("Delete latest sample: " + currentFile.toString());
+                    f.setLength(length+1);
+                    f.close();
+                }
+            }catch(IOException e)
+            {
+                debug(e.getMessage());
+            }
+
         }
         else
         {

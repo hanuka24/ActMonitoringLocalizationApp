@@ -18,4 +18,5 @@
     <string name="walking_prob">Walking: %d %</string>
     <string name="start_activity_monitoring_button">Start monitoring</string>
     <string name="predicted_activity">Activity: %s</string>
+    <string name="file_name">Trainingsdata.txt</string>
 </resources>

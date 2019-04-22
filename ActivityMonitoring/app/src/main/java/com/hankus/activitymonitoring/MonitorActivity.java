@@ -185,7 +185,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     {
         debug("Load trainingsdata");
         String root = Environment.getExternalStorageDirectory().toString();
-        File file = new File (root, "Trainingsdata.txt");
+        File file = new File (root, getResources().getString(R.string.file_name));
         BufferedReader reader;
 
         try {
