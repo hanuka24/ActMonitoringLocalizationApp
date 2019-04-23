@@ -10,8 +10,8 @@ New App design with 3 activities:
    It works basically, but better trainings data and more sophisticated feature extracation would improve perfomance.
    
 ## TODO
-- Polishing (Buttons color when pressed, general design
-- Error handling; App closes handling etc.
-- Improvement of classification: knn refactoring, better feature extraction
+- Polishing (Buttons color when pressed, general design) (added transition animation and changed button colours/style)
+- Error handling; App closes handling etc. (App fixed to portrait mode, no need for landscape)
+- Improvement of classification: knn refactoring, better feature extraction (added probability calculation)
 - Continous monitoring
 - Deletion of trainingsdata, last trainings sample etc. (done)
