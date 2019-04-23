@@ -1,5 +1,7 @@
 package com.hankus.activitymonitoring;
 
+import android.util.Pair;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,9 +45,12 @@ public class KNN {
     }
 
     // Get the class label by using neighbors
-    static String classify(ArrayList<Features> neighbors){
+    static Pair<String, HashMap<String, Double>> classify(ArrayList<Features> neighbors){
         //construct a HashMap to store <classLabel, weight>
         HashMap<String, Double> map = new HashMap<String, Double>();
+        //construct a HashMap to store <classLabel, probability>
+        HashMap<String, Double> probabilities = new HashMap<>();
+
         int num = neighbors.size();
 
         for(int index = 0;index < num; index ++){
@@ -69,6 +74,8 @@ public class KNN {
         //Find the most likely label
         double maxSimilarity = 0;
         String returnLabel = "unkown";
+        double sum = sumValues(map);
+
         Set<String> labelSet = map.keySet();
         Iterator<String> it = labelSet.iterator();
 
@@ -81,8 +88,26 @@ public class KNN {
                 maxSimilarity = value;
                 returnLabel = label;
             }
+            //add the probabilities of each class
+            probabilities.put(label, value / sum);
         }
 
-        return returnLabel;
+        //return the predictec label and the probabilities of all classes
+        Pair<String, HashMap<String, Double>> classification = new Pair<String, HashMap<String, Double>>(returnLabel, probabilities);
+
+        return classification;
+    }
+
+    static double sumValues(HashMap<String, Double> map)
+    {
+        Set<String> labelSet = map.keySet();
+        Iterator<String> it = labelSet.iterator();
+        double sum = 0.0;
+
+        while(it.hasNext()){
+            String label = it.next();
+            sum += map.get(label);
+        }
+        return sum;
     }
 }

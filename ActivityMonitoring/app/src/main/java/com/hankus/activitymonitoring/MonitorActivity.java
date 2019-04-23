@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -174,9 +176,19 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
             debug("Neighbor1: " + neighbors.get(0).activity + "\nNeighbor2: " + neighbors.get(1).activity
                     + "\nNeighbor3: " + neighbors.get(2).activity);
 
-            String activity_pred = classify(neighbors);
+            Pair<String, HashMap<String, Double>> classification = classify(neighbors);
+            String activity_pred = classification.first;
 
             mPredictedActivity.setText(getResources().getString(R.string.predicted_activity, activity_pred));
+
+            HashMap<String, Double> probabilities = classification.second;
+            Double walking = probabilities.get("walking");
+            Double stand = probabilities.get("standing_up");
+            Double sit = probabilities.get("sitting_down");
+
+            mTextWalkProb.setText(getResources().getString(R.string.walking_prob, walking));
+            mTextStandupProb.setText(getResources().getString(R.string.standing_up_prob, stand));
+            mTextSitdownProb.setText(getResources().getString(R.string.sitting_down_prob, sit));
         }
 
     }
