@@ -230,4 +230,9 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 }

@@ -59,10 +59,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.start_monitoring_button:
                 Intent intent1 = new Intent(this, MonitorActivity.class);
                 startActivity(intent1);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.start_training_button:
                 Intent intent2 = new Intent(this, TrainActivity.class);
                 startActivity(intent2);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             default:
