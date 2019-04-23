@@ -14,4 +14,4 @@ New App design with 3 activities:
 - Error handling; App closes handling etc.
 - Improvement of classification: knn refactoring, better feature extraction
 - Continous monitoring
-- Deletion of trainingsdata, last trainings sample etc.
+- Deletion of trainingsdata, last trainings sample etc. (done)
