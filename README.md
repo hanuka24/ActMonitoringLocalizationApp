@@ -12,6 +12,6 @@ New App design with 3 activities:
 ## TODO
 - Polishing (Buttons color when pressed, general design) (added transition animation and changed button colours/style)
 - Error handling; App closes handling etc. (App fixed to portrait mode, no need for landscape)
-- Improvement of classification: knn refactoring, better feature extraction (added probability calculation)
-- Continous monitoring
+- Improvement of classification: linearization/interpolating
+- Continous monitoring (done)
 - Deletion of trainingsdata, last trainings sample etc. (done)
