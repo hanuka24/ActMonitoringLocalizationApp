@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.723" />
+        app:layout_constraintVertical_bias="0.747" />
 
     <TextView
         android:id="@+id/walking_prob"
@@ -24,10 +24,11 @@
         android:layout_height="wrap_content"
         android:text="@string/walking_prob"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.272" />
+        app:layout_constraintVertical_bias="0.261" />
 
     <TextView
         android:id="@+id/standing_up_prob"
@@ -35,11 +36,10 @@
         android:layout_height="wrap_content"
         android:text="@string/standing_up_prob"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.204" />
+        app:layout_constraintVertical_bias="0.192" />
 
     <TextView
         android:id="@+id/sitting_down_prob"
@@ -47,11 +47,23 @@
         android:layout_height="wrap_content"
         android:text="@string/sitting_down_prob"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.345" />
+        app:layout_constraintVertical_bias="0.325" />
+
+    <TextView
+        android:id="@+id/idle_prob"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="@string/idle_prob"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.389" />
 
     <Button
         android:id="@+id/start_activity_monitoring_button"
@@ -60,10 +72,11 @@
         android:background="@drawable/rounded_button_green"
         android:text="@string/start_activity_monitoring_button"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.486" />
+        app:layout_constraintVertical_bias="0.512" />
 
     <TextView
         android:id="@+id/predicted_activity"
@@ -86,11 +99,10 @@
         android:checked="false"
         android:text="@string/continous_monitoring"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.606" />
+        app:layout_constraintVertical_bias="0.66" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -102,10 +114,9 @@
         android:progress="0"
         android:progressTint="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.836" />
+        app:layout_constraintVertical_bias="0.861" />
 
 </android.support.constraint.ConstraintLayout>

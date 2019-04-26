@@ -59,6 +59,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private TextView mTextWalkProb;
     private TextView mTextStandupProb;
     private TextView mTextSitdownProb;
+    private TextView mTextIdleProb;
     private TextView mPredictedActivity;
 
     private TextView mTextDebug;
@@ -83,6 +84,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         mTextWalkProb = (TextView) findViewById(R.id.walking_prob);
         mTextSitdownProb = (TextView) findViewById(R.id.sitting_down_prob);
         mTextStandupProb = (TextView) findViewById(R.id.standing_up_prob);
+        mTextIdleProb = (TextView) findViewById(R.id.idle_prob);
         mPredictedActivity = (TextView) findViewById(R.id.predicted_activity);
 
         //init Progressbar
@@ -199,10 +201,12 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
             Double walking = probabilities.containsKey("walking") ? probabilities.get("walking") : 0.0;
             Double stand = probabilities.containsKey("standing_up") ? probabilities.get("standing_up") : 0.0;
             Double sit = probabilities.containsKey("sitting_down") ? probabilities.get("sitting_down") : 0.0;
+            Double idle = probabilities.containsKey("idle") ? probabilities.get("idle") : 0.0;
 
             mTextWalkProb.setText(getResources().getString(R.string.walking_prob, walking));
             mTextStandupProb.setText(getResources().getString(R.string.standing_up_prob, stand));
             mTextSitdownProb.setText(getResources().getString(R.string.sitting_down_prob, sit));
+            mTextIdleProb.setText(getResources().getString(R.string.idle_prob, idle));
         }
 
     }
