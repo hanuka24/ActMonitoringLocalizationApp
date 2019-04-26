@@ -1,5 +1,9 @@
 package com.hankus.activitymonitoring;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Features implements Comparable< Features >{
     public double mean;
     public double min;
@@ -21,6 +25,11 @@ public class Features implements Comparable< Features >{
 
     public double getDistance() {
         return distance;
+    }
+
+    public ArrayList<Double> getFeaturesArray()
+    {
+        return new ArrayList<Double>(Arrays.asList(mean, min, max, index_max));
     }
 
     @Override
