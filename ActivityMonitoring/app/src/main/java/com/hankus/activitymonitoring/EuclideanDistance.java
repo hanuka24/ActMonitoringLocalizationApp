@@ -1,21 +1,18 @@
 package com.hankus.activitymonitoring;
 
-import android.icu.text.AlphabeticIndex;
+//Based on: https://github.com/wihoho/KNN/tree/master/src
 
-//This class implements Metric interface and is used to calculate EuclideanDistance
+import java.util.ArrayList;
+
 public class EuclideanDistance{
 
-    public double getDistance(Features s, Features e) {
+    public double getDistance(ArrayList<Double> s, ArrayList<Double> e) {
 
-        int numOfAttributes = s.numFeatures;
+        int numOfAttributes = s.size();
         double sum2 = 0;
 
-
-        sum2 += Math.pow(s.min - e.min, 2);
-        sum2 += Math.pow(s.max - e.max, 2);
-        sum2 += Math.pow(s.index_max - e.index_max, 2);
-        sum2 += Math.pow(s.mean - e.mean, 2);
-
+        for(int i = 0; i < numOfAttributes; i++)
+            sum2 += Math.pow(s.get(i) - e.get(i), 2);
 
         return Math.sqrt(sum2);
     }

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+//Based on: https://github.com/wihoho/KNN/tree/master/src
+
 public class KNN {
     // Find K nearest neighbors of testRecord within trainingSet
     static ArrayList<Features> findKNearestNeighbors(ArrayList<Features> trainingSet, Features testRecord, int K){
@@ -29,7 +31,7 @@ public class KNN {
 
         for (Features i : trainingSet
              ) {
-            i.distance = dist.getDistance(i, testRecord);
+            i.distance = dist.getDistance(i.getFeaturesArray(), testRecord.getFeaturesArray());
         }
 
         Collections.sort(trainingSet);
