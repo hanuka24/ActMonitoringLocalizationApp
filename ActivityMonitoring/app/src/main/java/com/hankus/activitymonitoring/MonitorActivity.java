@@ -17,6 +17,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -48,8 +50,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private String tag = "DEBUG - Monitor activity: ";
     private int NUM_SAMPLES = 70;
 
-    private int sampleCount;
-
+    private boolean continousMonitoring;
     private AccData accSamples;
 
     private ArrayList<Features> trainingData;
@@ -62,7 +63,9 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
     private TextView mTextDebug;
 
-    private Button mstartMonitoringButton;
+    private Button mStartMonitoringButton;
+    private CheckBox mContinousMonitoringCheckbox;
+    private ProgressBar mProgressBar;
 
 
     @Override
@@ -77,23 +80,26 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
         //init Textviews
         mTextDebug = (TextView) findViewById(R.id.debug);
-
-
         mTextWalkProb = (TextView) findViewById(R.id.walking_prob);
         mTextSitdownProb = (TextView) findViewById(R.id.sitting_down_prob);
         mTextStandupProb = (TextView) findViewById(R.id.standing_up_prob);
         mPredictedActivity = (TextView) findViewById(R.id.predicted_activity);
 
+        //init Progressbar
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
         //init Buttons
-        mstartMonitoringButton = findViewById(R.id.start_activity_monitoring_button);
-        mstartMonitoringButton.setOnClickListener(this);
+        mStartMonitoringButton = findViewById(R.id.start_activity_monitoring_button);
+        mStartMonitoringButton.setOnClickListener(this);
+        mContinousMonitoringCheckbox = findViewById(R.id.continous_monitoring_checkbox);
+        mContinousMonitoringCheckbox.setOnClickListener(this);
 
         //init Sensor
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         //init variables
-        sampleCount = 0;
+        continousMonitoring = false;
         accSamples = new AccData();
         trainingData = new ArrayList<Features>();
 
@@ -108,6 +114,8 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         double x = event.values[0];
         double y = event.values[1];
         double z = event.values[2];
+
+        mProgressBar.setProgress(accSamples.getSize() * 100 /NUM_SAMPLES);
 
         if(accSamples.getSize() < NUM_SAMPLES)
             accSamples.addSample(x,y,z);
@@ -126,9 +134,12 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         switch (v.getId()) {
             case R.id.start_activity_monitoring_button:
                 debug("Start monitoring");
-                    startMonitoring();
+                startMonitoring();
                 break;
-
+            case R.id.continous_monitoring_checkbox:
+                debug("Enable/disable continous monitoring");
+                continousMonitoring = !continousMonitoring;
+                break;
             default:
                 //do nothing
 
@@ -140,19 +151,22 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     {
         debug("Start monitoring");
         accSamples.clear();
-        mstartMonitoringButton.setEnabled(false);
-        mstartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_grey);
+        mStartMonitoringButton.setEnabled(false);
+        mStartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_grey);
         mSensorManager.registerListener(this, mSensorAcc,
                 SensorManager.SENSOR_DELAY_GAME);
+
     }
 
     private void stopMonitoring()
     {
         debug("Stop monitoring");
-        mstartMonitoringButton.setEnabled(true);
-        mstartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_green);
+        mStartMonitoringButton.setEnabled(true);
+        mStartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_green);
         mSensorManager.unregisterListener(this, mSensorAcc);
         predictActivity();
+        if(continousMonitoring)
+            startMonitoring();
     }
 
 
