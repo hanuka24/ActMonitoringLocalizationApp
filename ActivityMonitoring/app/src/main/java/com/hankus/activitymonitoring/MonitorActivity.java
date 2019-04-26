@@ -1,5 +1,9 @@
 package com.hankus.activitymonitoring;
 
+//The classification mechanism is based on:
+// Detecting User Activities using the Accelerometer on Android Smartphones
+// by Sauvik Das, LaToya Green, Beatrice Perez, Michael Murphy
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
