@@ -51,6 +51,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private Button mstartSitButton;
     private Button mstartIdle;
     private Button mdeleteLatestButton;
+    private Button mdeleteFile;
 
     private boolean sensorEnabled;
 
@@ -87,18 +88,22 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mstartSitButton = findViewById(R.id.sit_down_button);
         mstartIdle = findViewById(R.id.idle_button);
         mdeleteLatestButton = findViewById(R.id.delete_latest);
+        mdeleteFile = findViewById(R.id.delete_file);
 
         mstartWalkButton.setOnClickListener(this);
         mstartStandButton.setOnClickListener(this);
         mstartSitButton.setOnClickListener(this);
         mstartIdle.setOnClickListener(this);
         mdeleteLatestButton.setOnClickListener(this);
+        mdeleteFile.setOnClickListener(this);
 
         //init Variables
         fOutStream = null;
-        currentFile = null;
         currentActivity = "Unknown";
         sensorEnabled = false;
+
+        // set current file
+        getCurrentFile();
 
         accData = new AccData();
 
@@ -209,8 +214,10 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 accData.features.min, accData.features.max, accData.features.index_max, accData.features.mean,
                 currentActivity);
         debug("Save Data");
-        String root = Environment.getExternalStorageDirectory().toString();
-        currentFile = new File (root, getResources().getString(R.string.file_name));
+        if(currentFile == null)
+        {
+            getCurrentFile();
+        }
         try {
             fOutStream = new FileOutputStream(currentFile, true);
             fOutStream.write(data_string.getBytes());
@@ -244,9 +251,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 } while(b != 10 && length > 0);
                 if(length == 0)
                 {
-                    debug("No more samples to delete, deleted File!");
-                    currentFile.delete();
-                    currentFile = null;
+                    deleteFile();
                 }else{
                     debug("Delete latest sample: " + currentFile.toString());
                     f.setLength(length+1);
@@ -261,6 +266,19 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         else
         {
             debug("Latest sample not available");
+        }
+    }
+
+    private void deleteFile()
+    {
+        if(currentFile != null && currentFile.exists()) {
+            debug("No more samples, deleted File!");
+            currentFile.delete();
+            currentFile = null;
+        }
+        else
+        {
+            debug("Training file not available");
         }
     }
 
@@ -289,6 +307,9 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
             case R.id.delete_latest:
                 deleteLatestSample();
                 break;
+            case R.id.delete_file:
+                deleteFile();
+                break;
 
             default:
                 //do nothing
@@ -306,5 +327,11 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    public void getCurrentFile()
+    {
+        String root = Environment.getExternalStorageDirectory().toString();
+        currentFile = new File (root, getResources().getString(R.string.file_name));
     }
 }
