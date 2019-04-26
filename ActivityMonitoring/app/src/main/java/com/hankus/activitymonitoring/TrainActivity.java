@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class TrainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
 
@@ -210,9 +211,9 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         debug("Extract Features");
         accData.extractFeatures();
         debug("Compute String");
-        String data_string = String.format("%2f;%.2f;%.2f;%.2f;%s\n",
+        String data_string = String.format(Locale.ENGLISH, "%2f;%.2f;%.2f;%.2f;%.2f;%s\n",
                 accData.features.min, accData.features.max, accData.features.index_max, accData.features.mean,
-                currentActivity);
+                accData.features.frequency, currentActivity);
         debug("Save Data");
         if(currentFile == null)
         {

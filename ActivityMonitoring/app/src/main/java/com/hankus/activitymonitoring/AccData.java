@@ -5,11 +5,12 @@ import java.util.ArrayList;
 public class AccData {
     ArrayList<AccDataSample> accData;
     public Features features;
+    public DFT dft;
 
     public AccData()
     {
         accData = new ArrayList<AccDataSample>();
-        features = new Features(0,0,0,0, "unkown");
+        features = new Features(0,0,0,0, 0, "unknown");
     }
 
     public int getSize()
@@ -39,13 +40,18 @@ public class AccData {
         double min = 100;
         double max = 0;
         double index_max = 0;
+        double frequency = 0.0;
         double mean;
+        ArrayList<Double> imaginary = new ArrayList<>();
+        ArrayList<Double> real = new ArrayList<>();
 
         smoothData();
 
         for(int i = 0; i < accData.size(); i++) {
 
             sample = accData.get(i).getSum();
+            imaginary.add(sample);
+            real.add((double)i);
 
             sum += sample;
 
@@ -60,10 +66,12 @@ public class AccData {
 
         }
         mean = sum/accData.size();
+        frequency = getFrequency(imaginary, real);
 
         features.mean = mean;
         features.max = max;
         features.index_max = index_max;
+        features.frequency = frequency;
         features.min = min;
     }
 
@@ -77,5 +85,51 @@ public class AccData {
 
             accData.set(i, new AccDataSample(mean_x, mean_y, mean_z));
         }
+    }
+
+    private double getFrequency(ArrayList<Double> imaginary, ArrayList<Double> real)
+    {
+        ArrayList<Double> out_real = new ArrayList<>();
+        ArrayList<Double> out_imag = new ArrayList<>();
+        dft.computeDft(real, imaginary, out_imag, out_real);
+        double max1 = 0.0;
+        double max2 = 0.0;
+        double max3 = 0.0;
+        int index1 = 0;
+        int index2 = 0;
+        int index3 = 0;
+        double frequency = 0.0;
+
+        for (int i = 0; i < out_imag.size() - 1; i++) {
+            double amount = out_imag.get(i);
+            if(amount > max1)
+            {
+                max3 = max2;
+                max2 = max1;
+                max1 = amount;
+
+                index3 = index2;
+                index2 = index1;
+                index1 = i;
+            }
+            else if(amount > max2)
+            {
+                max3 = max2;
+                max2 = amount;
+
+                index3 = index2;
+                index2 = i;
+            }
+            else if(amount > max3)
+            {
+                max3 = amount;
+
+                index3 = i;
+            }
+        }
+
+        frequency = (out_real.get(index1) + out_real.get(index2) + out_real.get(index3)) / 3;
+
+        return frequency;
     }
 }

@@ -234,9 +234,10 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
                 double max = Double.parseDouble(featuresSplit[1]);
                 double index_max = Double.parseDouble(featuresSplit[2]);
                 double mean = Double.parseDouble(featuresSplit[3]);
-                String activity = featuresSplit[4];
+                double frequency = Double.parseDouble(featuresSplit[4]);
+                String activity = featuresSplit[5];
 
-                trainingData.add(new Features(mean, min, max, index_max, activity));
+                trainingData.add(new Features(mean, min, max, index_max, frequency, activity));
 
                 // read next line
                 line = reader.readLine();
