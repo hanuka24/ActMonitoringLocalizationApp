@@ -34,7 +34,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private Sensor mSensorAcc;
 
     private String tag = "DEBUG - Train activity: ";
-    private int NUM_SAMPLES = 70;
+    private int NUM_SAMPLES = 120;
 
     private String currentActivity;
 
@@ -125,12 +125,14 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         double y = event.values[1];
         double z = event.values[2];
 
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+
         mTextSensorAccX.setText(getResources().getString(R.string.label_acc_x, x));
         mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
         mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
 
         if(accData.getSize() < NUM_SAMPLES)
-            accData.addSample(x,y,z);
+            accData.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
     }
