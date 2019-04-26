@@ -36,6 +36,7 @@ public class Features implements Comparable< Features >{
     public int compareTo(Features o) {
         return new Double(distance).compareTo( o.distance);
     }
+
     @Override
     public String toString() {
         return String.valueOf(distance);

@@ -52,7 +52,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private Sensor mSensorAcc;
 
     private String tag = "DEBUG - Monitor activity: ";
-    private int NUM_SAMPLES = 70;
+    private int NUM_SAMPLES = 120;
 
     private boolean continousMonitoring;
     private AccData accSamples;
@@ -121,10 +121,12 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         double y = event.values[1];
         double z = event.values[2];
 
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+
         mProgressBar.setProgress(accSamples.getSize() * 100 /NUM_SAMPLES);
 
         if(accSamples.getSize() < NUM_SAMPLES)
-            accSamples.addSample(x,y,z);
+            accSamples.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
     }
