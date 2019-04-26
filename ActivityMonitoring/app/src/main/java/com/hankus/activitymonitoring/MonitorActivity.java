@@ -182,9 +182,9 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
             mPredictedActivity.setText(getResources().getString(R.string.predicted_activity, activity_pred));
 
             HashMap<String, Double> probabilities = classification.second;
-            Double walking = probabilities.get("walking");
-            Double stand = probabilities.get("standing_up");
-            Double sit = probabilities.get("sitting_down");
+            Double walking = probabilities.containsKey("walking") ? probabilities.get("walking") : 0.0;
+            Double stand = probabilities.containsKey("standing_up") ? probabilities.get("standing_up") : 0.0;
+            Double sit = probabilities.containsKey("sitting_down") ? probabilities.get("sitting_down") : 0.0;
 
             mTextWalkProb.setText(getResources().getString(R.string.walking_prob, walking));
             mTextStandupProb.setText(getResources().getString(R.string.standing_up_prob, stand));

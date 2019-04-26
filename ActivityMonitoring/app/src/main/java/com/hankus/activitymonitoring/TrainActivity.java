@@ -49,6 +49,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private Button mstartWalkButton;
     private Button mstartStandButton;
     private Button mstartSitButton;
+    private Button mstartIdle;
     private Button mdeleteLatestButton;
 
     private boolean sensorEnabled;
@@ -84,10 +85,13 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mstartWalkButton = findViewById(R.id.walk_button);
         mstartStandButton = findViewById(R.id.stand_up_button);
         mstartSitButton = findViewById(R.id.sit_down_button);
+        mstartIdle = findViewById(R.id.idle_button);
         mdeleteLatestButton = findViewById(R.id.delete_latest);
+
         mstartWalkButton.setOnClickListener(this);
         mstartStandButton.setOnClickListener(this);
         mstartSitButton.setOnClickListener(this);
+        mstartIdle.setOnClickListener(this);
         mdeleteLatestButton.setOnClickListener(this);
 
         //init Variables
@@ -187,6 +191,10 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 mstartSitButton.setActivated(!sensorEnabled);
                 mstartSitButton.setBackgroundResource(background);
                 break;
+            case "idle":
+                mstartIdle.setActivated(!sensorEnabled);
+                mstartIdle.setBackgroundResource(background);
+                break;
             default:
                 break;
         }
@@ -272,6 +280,10 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 break;
             case R.id.sit_down_button:
                 currentActivity = "sitting_down";
+                startMonitoring();
+                break;
+            case R.id.idle_button:
+                currentActivity = "idle";
                 startMonitoring();
                 break;
             case R.id.delete_latest:

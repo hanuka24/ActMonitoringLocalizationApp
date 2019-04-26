@@ -2,13 +2,14 @@
     <string name="app_name">Activity Monitoring</string>
     <string name="action_settings">Settings</string>
     <string name="error_no_sensor">No sensor</string>
-    <string name="debug">hmm</string>
+    <string name="debug">Debug</string>
     <string name="label_acc_x">Acc Sensor: %1$.2f</string>
     <string name="label_acc_y">Acc Sensor: %1$.2f</string>
     <string name="label_acc_z">Acc Sensor: %1$.2f</string>
     <string name="walk_button">Start walking</string>
     <string name="stand_up_button">Start standing up</string>
     <string name="sit_down_button">Start sitting down</string>
+    <string name="idle_button">Start doing nothing</string>
     <string name="monitoring_name">Monitoring</string>
     <string name="train_name">Train activities</string>
     <string name="start_monitoring_button">Start Activity Monitoring</string>
@@ -16,6 +17,7 @@
     <string name="sitting_down_prob">Sitting down: %1$.2f</string>
     <string name="standing_up_prob">Standing up: %1$.2f</string>
     <string name="walking_prob">Walking: %1$.2f</string>
+    <string name="idle_prob">Idle: %1$.2f</string>
     <string name="start_activity_monitoring_button">Start monitoring</string>
     <string name="predicted_activity">Activity: %s</string>
     <string name="file_name">Trainingsdata.txt</string>
