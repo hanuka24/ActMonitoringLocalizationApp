@@ -34,8 +34,6 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private Sensor mSensorAcc;
 
     private String tag = "DEBUG - Train activity: ";
-    private int NUM_SAMPLES = 120;
-
     private String currentActivity;
 
     private File currentFile;
@@ -131,7 +129,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
         mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
 
-        if(accData.getSize() < NUM_SAMPLES)
+        if(accData.getSize() < accData.getNumberOfSamples())
             accData.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
@@ -213,8 +211,8 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         debug("Extract Features");
         accData.extractFeatures();
         debug("Compute String");
-        String data_string = String.format(Locale.ENGLISH, "%2f;%.2f;%.2f;%.2f;%.2f;%s\n",
-                accData.features.min, accData.features.max, accData.features.index_max, accData.features.mean,
+        String data_string = String.format(Locale.ENGLISH, "%f;%f;%f;%f;%f;%f;%s\n",
+                accData.features.min, accData.features.max, accData.features.x_mean, accData.features.y_mean, accData.features.z_mean,
                 accData.features.frequency, currentActivity);
         debug("Save Data");
         if(currentFile == null)
