@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import static com.hankus.activitymonitoring.KNN.classify;
@@ -52,9 +54,8 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private Sensor mSensorAcc;
 
     private String tag = "DEBUG - Monitor activity: ";
-    private int NUM_SAMPLES = 120;
 
-    private boolean continousMonitoring;
+     private boolean continousMonitoring;
     private AccData accSamples;
 
     private ArrayList<Features> trainingData;
@@ -123,9 +124,9 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
         long timestamp = Calendar.getInstance().getTimeInMillis();
 
-        mProgressBar.setProgress(accSamples.getSize() * 100 /NUM_SAMPLES);
+        mProgressBar.setProgress(accSamples.getSize() * 100 / accSamples.getNumberOfSamples());
 
-        if(accSamples.getSize() < NUM_SAMPLES)
+        if(accSamples.getSize() < accSamples.getNumberOfSamples())
             accSamples.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
@@ -234,12 +235,13 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
                 double min = Double.parseDouble(featuresSplit[0]);
                 double max = Double.parseDouble(featuresSplit[1]);
-                double index_max = Double.parseDouble(featuresSplit[2]);
-                double mean = Double.parseDouble(featuresSplit[3]);
-                double frequency = Double.parseDouble(featuresSplit[4]);
-                String activity = featuresSplit[5];
+                double mean_x = Double.parseDouble(featuresSplit[2]);
+                double mean_y = Double.parseDouble(featuresSplit[3]);
+                double mean_z = Double.parseDouble(featuresSplit[4]);
+                double frequency = Double.parseDouble(featuresSplit[5]);
+                String activity = featuresSplit[6];
 
-                trainingData.add(new Features(mean, min, max, index_max, frequency, activity));
+                trainingData.add(new Features(mean_x, mean_y, mean_z, min, max, frequency, activity));
 
                 // read next line
                 line = reader.readLine();

@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class AccData {
     ArrayList<AccDataSample> accData;
 
-    private int NUM_SAMPLES = 80;
+    private int NUM_SAMPLES = 60;
 
     public Features features;
     public DFT dft;
@@ -17,8 +17,10 @@ public class AccData {
     public AccData()
     {
         accData = new ArrayList<AccDataSample>();
-        features = new Features(0,0,0,0, 0, "unknown");
+        features = new Features(0,0,0,0,0,0,"unknown");
     }
+
+    public int getNumberOfSamples(){return NUM_SAMPLES;}
 
     public int getSize()
     {
@@ -42,13 +44,16 @@ public class AccData {
 
     public void extractFeatures()
     {
-        double sum = 0;
+        double sum_x = 0;
+        double sum_y = 0;
+        double sum_z = 0;
         double sample;
         double min = 100;
         double max = 0;
-        double index_max = 0;
         double frequency = 0.0;
-        double mean;
+        double mean_x;
+        double mean_y;
+        double mean_z;
         ArrayList<Double> imaginary = new ArrayList<>();
         ArrayList<Double> real = new ArrayList<>();
 
@@ -62,31 +67,33 @@ public class AccData {
             imaginary.add(sample);
             real.add((double)i);
 
-            sum += sample;
+            sum_x += accData.get(i).x;
+            sum_y += accData.get(i).y;
+            sum_z += accData.get(i).z;
 
             if(sample < min)
                 min = sample;
 
             if(sample > max)
-            {
                 max = sample;
-                index_max = i;
-            }
-
         }
-        mean = sum/accData.size();
+
+        mean_x = sum_x/accData.size();
+        mean_y = sum_y/accData.size();
+        mean_z = sum_z/accData.size();
         frequency = getFrequency(imaginary, real);
 
-        features.mean = mean;
+        features.x_mean = mean_x;
+        features.y_mean = mean_y;
+        features.z_mean = mean_z;
         features.max = max;
-        features.index_max = index_max;
         features.frequency = frequency;
         features.min = min;
     }
 
     private void smoothData()
     {
-        for(int i = 2; i < accData.size() - 2; i++) {
+        for(int i = 1; i < accData.size() - 1; i++) {
 
             double mean_x = (accData.get(i - 1).x + accData.get(i).x + accData.get(i+1).x) / 3.0;
             double mean_y = (accData.get(i - 1).y + accData.get(i).y + accData.get(i+1).y) / 3.0;
