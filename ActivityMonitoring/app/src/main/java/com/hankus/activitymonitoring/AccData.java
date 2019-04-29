@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class AccData {
     ArrayList<AccDataSample> accData;
 
-    private int NUM_SAMPLES = 120;
+    private int NUM_SAMPLES = 80;
 
     public Features features;
     public DFT dft;
@@ -164,7 +164,8 @@ public class AccData {
 
         for (int i = 0; i < out_imag.size() - 1; i++) {
             double amount = out_imag.get(i);
-            if(amount > max1)
+            double f = out_real.get(i);
+            if(amount > max1 && f < 700)
             {
                 max3 = max2;
                 max2 = max1;
@@ -174,7 +175,7 @@ public class AccData {
                 index2 = index1;
                 index1 = i;
             }
-            else if(amount > max2)
+            else if(amount > max2 && f < 700)
             {
                 max3 = max2;
                 max2 = amount;
@@ -182,7 +183,7 @@ public class AccData {
                 index3 = index2;
                 index2 = i;
             }
-            else if(amount > max3)
+            else if(amount > max3 && f < 700)
             {
                 max3 = amount;
 
