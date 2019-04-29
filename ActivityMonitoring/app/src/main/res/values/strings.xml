@@ -12,8 +12,10 @@
     <string name="idle_button">Start doing nothing</string>
     <string name="monitoring_name">Monitoring</string>
     <string name="train_name">Train activities</string>
+    <string name="localization_name">Localization</string>
     <string name="start_monitoring_button">Start Activity Monitoring</string>
     <string name="start_training_button">Record new training data</string>
+    <string name="start_localization_activity">Start Localization</string>
     <string name="sitting_down_prob">Sitting down: %1$.2f</string>
     <string name="standing_up_prob">Standing up: %1$.2f</string>
     <string name="walking_prob">Walking: %1$.2f</string>

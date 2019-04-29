@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button msstartMonitoring;
     private Button msstartTraining;
+    private Button msstartLocalization;
 
 
     @Override
@@ -29,9 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //init Buttons
         msstartMonitoring = findViewById(R.id.start_monitoring_button);
         msstartTraining = findViewById(R.id.start_training_button);
+        msstartLocalization = findViewById(R.id.start_localization_activity);
 
         msstartMonitoring.setOnClickListener(this);
         msstartTraining.setOnClickListener(this);
+        msstartLocalization.setOnClickListener(this);
 
         debug("onCreate complete");
     }
@@ -65,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent2 = new Intent(this, TrainActivity.class);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.start_localization_activity:
+                Intent intent3 = new Intent(this, LocalizationActivity.class);
+                startActivity(intent3);
+                overridePendingTransition(R.anim.slide_in_top, R.anim.slide_in_bot);
                 break;
 
             default:
