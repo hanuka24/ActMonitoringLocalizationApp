@@ -3,16 +3,24 @@ package com.hankus.activitymonitoring;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.provider.Telephony;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MapView extends View {
 
   //Bitmap background;
-    Canvas mCanvas;
-    Paint mPaint;
+    private Canvas mCanvas;
+    private Paint mPaint;
+    private ArrayList<Particle> mParticles;
+    private String tag = "MapView";
+
+    private int width;
+    private int height;
 
     int num_circles;
 
@@ -37,19 +45,20 @@ public class MapView extends View {
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        Log.wtf("MapView","OnDraw (Num = " + num_circles + ")");
+        Log.wtf("MapView","OnDraw (Num = " + mParticles.size() + ")");
 
-        for(int i = 0; i < num_circles; i++)
-            canvas.drawCircle(20, i * 50, 20, mPaint);
+        for (Particle p: mParticles
+             ) {
+            canvas.drawCircle(p.x, p.y, p.weight * 10, mPaint);
+        }
+
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        //super.onSizeChanged(w, h, oldw, oldh);
-
-        // your Canvas will draw onto the defined Bitmap
-       // background = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        //mCanvas = new Canvas(background);
+        width = w;
+        height = h;
+        Log.wtf(tag, "Width = " + w + "; Height = " + h);
     }
 
     void initMap()
@@ -61,24 +70,40 @@ public class MapView extends View {
         mPaint.setColor(ResourcesCompat.getColor(getResources(),
                 R.color.colorPrimaryDark, null));
 
-
+        mParticles = new ArrayList<Particle>();
     }
 
-    void addCircle()
+    void addParticle(Particle particle)
     {
-        Log.wtf("MapView", "Add circles");
-        num_circles++;
-        invalidate();
+        Log.wtf(tag, "Add Particle");
+        mParticles.add(particle);
+    }
+
+    void removeParticle()
+    {
+        Log.wtf(tag, "Add Particle");
+        mParticles.remove(0);
     }
 
     void clear()
     {
-        num_circles = 0;
+        Log.wtf(tag, "Clear all particles");
+        mParticles.clear();
         invalidate();
     }
 
     void update()
     {
         invalidate();
+    }
+
+    int getMapWidth()
+    {
+        return width;
+    }
+
+    int getMapHeight()
+    {
+        return height;
     }
 }
