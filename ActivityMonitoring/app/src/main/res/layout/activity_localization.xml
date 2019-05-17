@@ -55,4 +55,28 @@
         app:layout_constraintVertical_bias="0.759" />
 
 
+    <Button
+        android:id="@+id/set_orientation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set orientation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.855"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.759" />
+
+    <TextView
+        android:id="@+id/orientation"
+        android:layout_width="123dp"
+        android:layout_height="39dp"
+        android:text="@string/orientation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.829"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.832" />
+
 </android.support.constraint.ConstraintLayout>

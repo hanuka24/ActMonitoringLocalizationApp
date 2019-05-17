@@ -24,4 +24,6 @@
     <string name="predicted_activity">Activity: %s</string>
     <string name="file_name">Trainingsdata.txt</string>
     <string name="continous_monitoring">Continous monitoring</string>
+    <string name="orientation">Orientation %.2f</string>
+
 </resources>
