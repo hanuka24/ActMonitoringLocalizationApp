@@ -1,16 +1,17 @@
 package com.hankus.activitymonitoring;
 
 public class Particle {
-    private float x;
-    private float y;
-    private float weight;
+    public int x;
+    public int y;
+    public float weight;
     // angle in degrees
-    private float orientation;
+    public float orientation;
 
-    Particle(float x, float y, float orientation)
+    Particle(int x, int y, float orientation, float weight)
     {
         this.x = x;
         this.y = y;
         this.orientation = orientation;
+        this.weight = weight;
     }
 }

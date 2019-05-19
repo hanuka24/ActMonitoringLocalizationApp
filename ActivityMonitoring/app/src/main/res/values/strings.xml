@@ -25,4 +25,6 @@
     <string name="file_name">Trainingsdata.txt</string>
     <string name="continous_monitoring">Continous monitoring</string>
     <string name="localization_debug">Debug</string>
+    <string name="orientation">Orientation %.2f</string>
+    <string name="step_count">Steps: %d</string>
 </resources>
