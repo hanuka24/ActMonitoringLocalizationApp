@@ -52,6 +52,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     int mCurrentY;
     int mStepTime;
 
+    Particle mMovingPoint;
+
     float mOrientationOffset;
     float mOrientation;
 
@@ -105,6 +107,9 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         state = "Debug";
 
 
+        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
+
+
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
         mTextDebug = (TextView) findViewById(R.id.localization_debug);
@@ -142,7 +147,12 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         standard_deviation = 0.0;
         mTextDebug.setText(state);
 
-
+        if(state.equals("WALKING"))
+        {
+            move((int) 5);
+            mapView.addParticle(new Particle(mCurrentX, mCurrentY, 0, 1));
+            mapView.update();
+        }
 
         startMonitoring();
     }
@@ -257,7 +267,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_particle_button:
-                move();
+                move(5);
                 mapView.addParticle(new Particle(mCurrentX, mCurrentY, 0, 2));
                 mapView.update();
                 break;
@@ -270,16 +280,18 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.set_orientation_button:
                 mOrientationOffset = orientationValues[0];
+                float rad2deg = (float)(180.0f/Math.PI);
+                Log.wtf(tag, "Offset = " + mOrientationOffset + " (= " + (mOrientationOffset*rad2deg) + " deg)");
                 break;
             default:
                     break;
         }
     }
 
-    void move()
+    void move(int steps)
     {
-        int x = mCurrentX + (int)(5 * Math.sin((double) mOrientation));
-        int y = mCurrentY + (int)(5 * Math.cos((double) mOrientation));
+        int x = mCurrentX + (int)(steps * Math.sin((double) mOrientation));
+        int y = mCurrentY + (int)(steps * Math.cos((double) mOrientation));
 
         if(x < 0)
             x = 0;
@@ -310,7 +322,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
                 long timestamp = Calendar.getInstance().getTimeInMillis();
 
-                if(accSamples.getSize() < accSamples.getNumberOfSamples())
+                if(accSamples.getSize() < 40)//accSamples.getNumberOfSamples())
                     accSamples.addSample(x,y,z, timestamp);
                 else
                 {
@@ -327,15 +339,15 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
             final float rad2deg = (float)(180.0f/Math.PI);
 
             float incl = SensorManager.getInclination(I);
-            if (mCount++ > 50) {
-                mOrientation = (float)((orientationValues[0] - mOrientationOffset));
+            //if (mCount++ > 50) {
+                mOrientation = (orientationValues[0] - mOrientationOffset);
                 mCount = 0;
-                Log.wtf("Compass", "yaw: " + (int)((orientationValues[0] - mOrientationOffset) *rad2deg) +
-                        "  pitch: " + (int)(orientationValues[1]*rad2deg) +
-                        "  roll: " + (int)(orientationValues[2]*rad2deg) +
-                        "  incl: " + (int)(incl*rad2deg)
-                );
-            }
+             /*  Log.wtf("Compass", "yaw: " + ((orientationValues[0] - mOrientationOffset) *rad2deg) +
+                        "  pitch: " + (orientationValues[1]*rad2deg) +
+                        "  roll: " + (orientationValues[2]*rad2deg) +
+                        "  incl: " + (incl*rad2deg)
+                );*/
+         //   }
 
             mOrientationText.setText(getResources().getString(R.string.orientation,mOrientation * rad2deg));
         }
