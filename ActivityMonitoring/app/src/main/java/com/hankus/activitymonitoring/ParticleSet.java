@@ -43,7 +43,6 @@ public class ParticleSet {
     public void doParticleFilter(int stepwidth, float direction)
     {
         if(mInit){
-            mParticleFilter.initParticles();
             mParticleFilter.moveParticles(stepwidth, direction);
             mInit = false;
         }

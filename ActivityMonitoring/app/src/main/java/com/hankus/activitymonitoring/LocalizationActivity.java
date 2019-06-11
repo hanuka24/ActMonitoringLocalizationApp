@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -153,6 +154,25 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+//    private class senseMovement extends AsyncTask<Pair<Integer, Float>, Void, Void>{
+//
+//        @Override
+//        protected Void doInBackground(Pair<Integer, Float>... param) {
+//            Log.wtf(tag, "Movement detected, move particles");
+//            mStepCountText.setText(getResources().getString(R.string.step_count, param[0].first));
+//            mOrientationText.setText(getResources().getString(R.string.orientation, param[0].second * 180 / Math.PI));
+//            mOrientation = param[0].second;
+//            mSteps = param[0].first;
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void params) {
+//            Log.wtf(tag, "Compute Step");
+//            new ComputeStep().execute();
+//        }
+//    }
+
     private class ComputeStep extends AsyncTask<Void, Void, Void> {
 
 
@@ -161,7 +181,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected Void doInBackground(Void ...params) {
-            mParticles.doParticleFilter(8 * mSteps, mOrientation);
+            mParticles.doParticleFilter(12 * mSteps, mOrientation);
             return null;
         }
 
@@ -175,6 +195,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         protected void onPostExecute(Void params) {
             Log.wtf(tag, "Performed calculation");
             mapView.update();
+            sensingService.startMonitoring();
         }
 
     }

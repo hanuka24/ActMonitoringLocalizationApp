@@ -94,7 +94,7 @@ public class MapView extends View {
             for (int j = 0; j < mBackground.getHeight(); j++) {
                 if (mBackground.getPixel(i, j) == 0xFFFFFFFF)
                     mParticleSet.mFloor.add(new Point(i, j));
-                else
+                else if (mBackground.getPixel(i, j) != 0xFFFF0000)
                     mParticleSet.mWalls.add(new Point(i, j));
             }
         }

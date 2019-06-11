@@ -10,19 +10,25 @@ import java.util.Random;
 public class ParticleFilter {
     private String tag = "ParticleFilter";
     private ParticleSet mParticleSet;
+    private boolean is_initialized;
 
     public ParticleFilter(ParticleSet particleSet)
     {
         this.mParticleSet = particleSet;
+        this.is_initialized = false;
     }
 
     public void initParticles()
     {
-        Random r = new Random();
-        mParticleSet.clear();
-        for (int i = 0; i < mParticleSet.NUM_PARTICLES; i++) {
-            Point p =  mParticleSet.mFloor.get(r.nextInt(mParticleSet.mFloor.size() - 1));
-            mParticleSet.addParticle(new Particle(p.x, p.y, 0, 2));
+        if(!is_initialized)
+        {
+            Random r = new Random();
+            mParticleSet.clear();
+            for (int i = 0; i < mParticleSet.NUM_PARTICLES; i++) {
+                Point p =  mParticleSet.mFloor.get(r.nextInt(mParticleSet.mFloor.size() - 1));
+                mParticleSet.addParticle(new Particle(p.x, p.y, 0, 2));
+            }
+            is_initialized = true;
         }
     }
 
@@ -56,8 +62,10 @@ public class ParticleFilter {
     {
         for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--) {
 
-            int x = mParticleSet.mParticles.get(i).x + (int)(stepwidth * Math.sin((double) direction));
-            int y = mParticleSet.mParticles.get(i).y + (int)(stepwidth * Math.cos((double) direction));
+            double orientation_randomness = (new Random().nextInt(25) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
+
+            int x = mParticleSet.mParticles.get(i).x + (int)(stepwidth * Math.sin((double) direction + orientation_randomness));
+            int y = mParticleSet.mParticles.get(i).y + (int)(stepwidth * Math.cos((double) direction + orientation_randomness));
 
             if(!wallCollision(i, x, y))
             {

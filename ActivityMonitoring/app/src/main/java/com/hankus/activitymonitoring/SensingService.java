@@ -18,6 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.sort;
 
@@ -77,7 +78,7 @@ public class SensingService extends Service implements SensorEventListener {
         return output;
     }
 
-    private void startMonitoring()
+    public void startMonitoring()
     {
         accSamples.clear();
         mSensorManager.registerListener(this, mSensorAcc,
@@ -101,11 +102,10 @@ public class SensingService extends Service implements SensorEventListener {
         {
             mWasWalking = false;
             Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((int)mWalkingTime/mStepTime + 1, mOrientation);
+            activity.makeStep((int)mWalkingTime/mStepTime + 1, mOrientation + mOrientationOffset);
         }
-
-
-        startMonitoring();
+        else
+            startMonitoring();
     }
 
 
@@ -140,8 +140,8 @@ public class SensingService extends Service implements SensorEventListener {
         state = "Debug";
         mWasWalking = false;
 
-        mOrientationOffset = 0;
-        mOrientation = 0;
+        mOrientationOffset = 1.95f;
+        mOrientation = 0.1f;
 
         mSensorManager.registerListener(this, mSensorAcc, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_UI);
@@ -183,7 +183,7 @@ public class SensingService extends Service implements SensorEventListener {
             if(success)
             {
                 SensorManager.getOrientation(Rotation, orientationValues);
-                mOrientation = -orientationValues[0];
+                mOrientation = (-orientationValues[0] * 0.9f + mOrientation * 0.1f);
                 mags = null;
                 accels = null;
             }
