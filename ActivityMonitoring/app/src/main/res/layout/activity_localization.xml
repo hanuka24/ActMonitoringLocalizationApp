@@ -19,10 +19,10 @@
         app:layout_constraintVertical_bias="0.9" />
 
     <Button
-        android:id="@+id/delete_particle_button"
+        android:id="@+id/init_particles_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete Particle"
+        android:text="Init Particles"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.118"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,15 +32,14 @@
 
     <com.hankus.activitymonitoring.MapView
         android:id="@+id/map_view"
-        android:layout_width="360dp"
-        android:layout_height="320dp"
-        android:background="@drawable/background"
+        android:layout_width="match_parent"
+        android:layout_height="163dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.211" />
+        app:layout_constraintVertical_bias="0.336" />
 
     <Button
         android:id="@+id/add_particle_button"

@@ -2,132 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d5a1ea18-b179-4681-b51c-bd319658aacc" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/AccData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/AccData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/Features.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/Features.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MonitorActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MonitorActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/TrainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/TrainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/caches/build_file_checksums.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/caches/gradle_models.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_core_common_1_1_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_core_runtime_1_1_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_lifecycle_common_1_1_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_lifecycle_livedata_1_1_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_lifecycle_livedata_core_1_1_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_lifecycle_runtime_1_1_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__android_arch_lifecycle_viewmodel_1_1_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_animated_vector_drawable_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_appcompat_v7_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_asynclayoutinflater_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_cardview_v7_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_collections_28_0_0_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_constraint_constraint_layout_1_1_3_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_constraint_constraint_layout_solver_1_1_3_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_coordinatorlayout_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_cursoradapter_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_customview_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_design_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_documentfile_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_drawerlayout_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_interpolator_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_loader_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_localbroadcastmanager_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_print_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_recyclerview_v7_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_slidingpanelayout_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_annotations_28_0_0_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_compat_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_core_ui_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_core_utils_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_fragment_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_support_vector_drawable_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_swiperefreshlayout_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_test_espresso_espresso_core_3_0_2_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_test_espresso_espresso_idling_resource_3_0_2_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_test_monitor_1_0_2_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_test_runner_1_0_2_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_transition_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_versionedparcelable_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_android_support_viewpager_28_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_google_code_findbugs_jsr305_2_0_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__com_squareup_javawriter_2_1_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__javax_inject_javax_inject_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__junit_junit_4_12_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__net_sf_kxml_kxml2_2_3_0_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__org_hamcrest_hamcrest_core_1_3_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__org_hamcrest_hamcrest_integration_1_3_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/libraries/Gradle__org_hamcrest_hamcrest_library_1_3_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/proguard-rules.pro" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/androidTest/java/com/example/actmonitoringlocalizatin/ExampleInstrumentedTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/AndroidManifest.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/actmonitoringlocalizatin/MainActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/layout/activity_main.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/layout/content_main.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/menu/menu_main.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/values/colors.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/values/dimens.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/values/styles.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/test/java/com/example/actmonitoringlocalizatin/ExampleUnitTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/gradle.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/local.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/readme.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/sitting_down_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/sitting_down_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/standing_up_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/standing_up_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/standing_up_3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/walking_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/walking_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/walking_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sitting_down_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sitting_down_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/sitting_down_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standing_up_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standing_up_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standing_up_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standing_up_3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_4.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_6.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_7.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_8.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/walking_9.txt" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/ParticleSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/SensingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/LocalizationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/LocalizationActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MapView.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MapView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/res/layout/activity_localization.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/res/layout/activity_localization.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Data/Trainingsdata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Data/Trainingsdata.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/kNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kNN_old.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -144,7 +27,7 @@
         <entry file="file://$PROJECT_DIR$/kNN.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="195">
-              <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+              <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -157,6 +40,11 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>getFeaturesFromFile</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -187,6 +75,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -198,7 +87,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -272,7 +160,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4972737" visible="true" weight="0.36098656" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49672845" visible="true" weight="0.36098656" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49945474" weight="0.39910313" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -280,7 +168,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49890947" weight="0.3295964" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50272626" side_tool="true" visible="true" weight="0.36098656" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5032715" side_tool="true" visible="true" weight="0.36098656" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -305,7 +193,7 @@
     <entry file="file://$PROJECT_DIR$/kNN.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
-          <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+          <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
         </state>
       </provider>
     </entry>

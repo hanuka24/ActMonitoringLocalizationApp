@@ -1,41 +1,43 @@
 package com.hankus.activitymonitoring;
 
+import android.graphics.Point;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class ParticleFilter {
 
-    private ArrayList<Particle> particles = new ArrayList<>();
-    private int particle_count = 100;
-    private int height;
-    private int width;
+    private String tag = "ParticleFilter";
 
-    public ParticleFilter(int height, int width)
+    private int num_particles;
+
+    private ParticleSet mParticleSet;
+    private MapView mMapView;
+
+    public ParticleFilter(ParticleSet particleSet)
     {
-        this.height = height;
-        this.width = width;
+        this.mParticleSet = particleSet;
     }
 
-    public void initialBelief()
+    public void initParticles()
     {
-        for(int i = 0; i <  particle_count; i++)
-        {
-            int x = new Random().nextInt(width + 1);
-            int y = new Random().nextInt(height + 1);
-            Particle particle = new Particle(x, y, 0, 0);
-
-            particles.add(particle);
+        Random r = new Random();
+        clear();
+        for (int i = 1; i <= mParticleSet.NUM_PARTICLES; i++) {
+            Point p =  mParticleSet.mFloor.get(r.nextInt(mParticleSet.mFloor.size() - 1));
+            mParticleSet.mParticles.add(new Particle(p.x, p.y, 0, 2));
         }
     }
 
     public void sense()
     {
-        for (int i = 0; i < particles.size(); i++)
+        for (int i = 0; i < mParticleSet.mParticles.size(); i++)
         {
-            Particle particle = particles.get(i);
+            Particle particle = mParticleSet.mParticles.get(i);
             if(wallCollision(particle.x, particle.y))
             {
-                particles.remove(i);
+                mParticleSet.mParticles.remove(i);
             }
             else
             {
@@ -50,9 +52,18 @@ public class ParticleFilter {
 
     }
 
-    public void move()
+    public void moveParticles(int stepwidth, float direction) //move particles and remove if they move on wall
     {
+        for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--) {
 
+            int x = mParticleSet.mParticles.get(i).x + (int)(stepwidth * Math.sin((double) direction));
+            int y = mParticleSet.mParticles.get(i).y + (int)(stepwidth * Math.cos((double) direction));
+
+            //if(mFloor.contains(new Point(x,y)) && !outOfBound(x,y))
+            mParticleSet.mParticles.set(i, new Particle(x,y, mParticleSet.mParticles.get(i).orientation, mParticleSet.mParticles.get(i).weight));
+//            else
+//                mParticles.remove(i);
+        }
     }
 
     public boolean wallCollision(int x, int y)
@@ -64,11 +75,11 @@ public class ParticleFilter {
     {
         float sum = 0f;
 
-        for (Particle particle : particles) {
+        for (Particle particle : mParticleSet.mParticles) {
             sum += particle.probability;
         }
 
-        particles.get(i).weight = particles.get(i).probability / sum;
+        mParticleSet.mParticles.get(i).weight = mParticleSet.mParticles.get(i).probability / sum;
     }
 
     public void calculateProbability(int i)
@@ -79,5 +90,11 @@ public class ParticleFilter {
     public void killParticles()
     {
 
+    }
+
+    public void clear()
+    {
+        Log.wtf(tag, "Clear all particles");
+        mParticleSet.mParticles.clear();
     }
 }

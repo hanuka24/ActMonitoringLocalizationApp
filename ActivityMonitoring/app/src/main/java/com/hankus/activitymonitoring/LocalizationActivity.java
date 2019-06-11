@@ -1,67 +1,61 @@
 package com.hankus.activitymonitoring;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.sort;
 
-public class LocalizationActivity extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
+public class LocalizationActivity extends AppCompatActivity implements View.OnClickListener, SensingService.Callbacks {
 
-    private AccData accSamples;
     private MapView mapView;
     private String tag;
 
     private Button mAddParticleButton;
-    private Button mDeleteParticleButton;
+    private Button mInitParticleButton;
     private Button mClearParticleButton;
     private Button mSetOrientationButton;
 
-    private SensorManager mSensorManager;
-    private Sensor mSensorAcc;
-    private Sensor mSensorMag;
 
-    private float[] Rotation;
-    private float[] I;
-    private float[] mags;
-    private float[] accels;
-    private float[] orientationValues = {0f, 0f, 0f};
+    private ParticleSet mParticles;
 
-    private double variance;
-    private double standard_deviation;
-    private double autocorrelation_max;
-    private float idle_threshold;
-    private float walking_threshold;
-    private String state;
-
-    int mCount;
-    int mCurrentX;
-    int mCurrentY;
-    int mStepTime;
 
     Particle mMovingPoint;
 
-    float mOrientationOffset;
     float mOrientation;
+    int mSteps;
 
     private TextView mOrientationText;
     private TextView mTextDebug;
     private TextView mStepCount;
 
-    long start_time;
+    Intent serviceIntent;
+    SensingService sensingService;
+
 
     private boolean remapped_orientation;
 
@@ -70,14 +64,9 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_localization);
 
-        accSamples = new AccData();
         tag = "Localization Activity";
 
-        //init Sensor
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorMag = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
+        Log.wtf(tag, "onCreate");
 
         //init Background map
         mapView = findViewById(R.id.map_view);
@@ -85,148 +74,70 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         //init Buttons
         mAddParticleButton = findViewById(R.id.add_particle_button);
         mAddParticleButton.setOnClickListener(this);
-        mDeleteParticleButton = findViewById(R.id.delete_particle_button);
-        mDeleteParticleButton.setOnClickListener(this);
+        mInitParticleButton = findViewById(R.id.init_particles_button);
+        mInitParticleButton.setOnClickListener(this);
         mClearParticleButton = findViewById(R.id.clear_particle_button);
         mClearParticleButton.setOnClickListener(this);
         mSetOrientationButton = findViewById(R.id.set_orientation_button);
         mSetOrientationButton.setOnClickListener(this);
 
-        Rotation = new float[16];
-        I = new float[16];
-        mags = null;
-        accels= null;
-        mCount = 0;
-        mCurrentX = 0;
-        mCurrentY = 0;
-        start_time = 0;
-        mStepTime = 750; // in milliseconds
-        variance = 0.0;
-        standard_deviation = 0.0;
-        autocorrelation_max = 0.0;
-        idle_threshold = 0.8f;
-        walking_threshold = 0.7f;
-        state = "Debug";
-        remapped_orientation = false;
-
-
         mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
-
 
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
         mTextDebug = (TextView) findViewById(R.id.localization_debug);
         mStepCount = (TextView) findViewById(R.id.step_count);
 
-        mOrientationOffset = 0;
-        mOrientation = 0;
+        mParticles = new ParticleSet();
+        mapView.setParticleSet(mParticles);
+        //Start sensing
 
-        //init Sensor
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        serviceIntent = new Intent(LocalizationActivity.this, SensingService.class);
 
-        mSensorManager.registerListener(this, mSensorAcc,
-                SensorManager.SENSOR_DELAY_GAME);
+
+        startService(serviceIntent); //Starting the service
+        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE); //Binding to the service!
     }
 
-    private void startMonitoring()
-    {
-        accSamples.clear();
-        mSensorManager.registerListener(this, mSensorAcc,
-                SensorManager.SENSOR_DELAY_GAME);
-    }
+    private ServiceConnection mConnection = new ServiceConnection() {
 
-    private void stopMonitoring()
-    {
-        mSensorManager.unregisterListener(this, mSensorAcc);
-        accSamples.extractFeatures();
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            Log.wtf(tag, "onServiceConnected called");
+            // We've binded to LocalService, cast the IBinder and get LocalService instance
+            SensingService.LocalBinder binder = (SensingService.LocalBinder) service;
+            sensingService = binder.getServiceInstance(); //Get instance of your service!
+            sensingService.registerClient(LocalizationActivity.this); //Activity register in the service as client for callabcks!
 
-        double mean = calculateXYZMean(accSamples.features.x_mean, accSamples.features.y_mean, accSamples.features.z_mean);
-        calculateStandardDeviation(mean);
-        calculateAutocorrelation(mean);
-        checkMovement();
-
-        variance = 0.0;
-        standard_deviation = 0.0;
-        mTextDebug.setText(state);
-
-        if(state.equals("WALKING"))
-        {
-            move((int) 50);
-            mapView.addParticle(new Particle(mCurrentX, mCurrentY, 0, 1));
-            mapView.update();
         }
 
-        startMonitoring();
-    }
-
-
-    private void calculateStandardDeviation(double mean)
-    {
-        ArrayList<AccDataSample> accData = accSamples.accData;
-
-        double sum = 0.0;
-        for(int i = 0; i < accData.size() - 1; i++)
-        {
-            sum += Math.pow(accData.get(i).getSum() - mean, 2);
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.wtf(tag, "onServiceDisconnected called");
         }
-        variance = sum / accData.size();
-        standard_deviation = Math.sqrt(variance);
-    }
+    };
 
-    private void calculateAutocorrelation(double mean)
-    {
-        ArrayList<AccDataSample> accData = accSamples.accData;
-
-        double [] temp = new double[accData.size()];
-        double [] m = new double[accData.size()];
-        double [] autocorrelation = new double[accData.size()];
-
-        for(int h = 0; h < accData.size(); h++)
-        {
-            for(int t = 1; t < accData.size() - h; t++)
-            {
-                temp[h] = temp[h] + Math.pow(accData.get(h + t).getSum() - mean, 2);
-                m[h] = temp[h] / accData.size();
-            }
-            autocorrelation[h] = m[h] / variance;
-        }
-
-        sort(autocorrelation);
-        autocorrelation_max = autocorrelation[accData.size() - 1];
-    }
-
-    private double calculateXYZMean(double x_mean, double y_mean, double z_mean)
-    {
-        return Math.sqrt(Math.pow(x_mean, 2) + Math.pow(y_mean, 2) + Math.pow(z_mean, 2));
-    }
-
-    private void checkMovement()
-    {
-        System.out.println("Standard Deviation " + standard_deviation);
-        System.out.println("Autocorrelation " + autocorrelation_max);
-        if(standard_deviation < idle_threshold)
-        {
-            if(!state.equals("IDLE"))
-            {
-                state = "IDLE";
-                long time = System.currentTimeMillis() - start_time;
-                mStepCount.setText(getResources().getString(R.string.step_count, (int) time / mStepTime));
-                start_time = 0;
-            }
-        }
-        else if(autocorrelation_max > walking_threshold && !state.equals("WALKING"))
-        {
-            state = "WALKING";
-            start_time = System.currentTimeMillis();
-        }
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mSensorAcc, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_GAME);
+
+        Log.wtf(tag, "onResume");
+
+        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
+
+    }
+
+    @Override
+    public void makeStep(int steps, float direction)
+    {
+       Log.wtf(tag, "Movement detected, move particles");
+       mOrientationText.setText(getResources().getString(R.string.orientation, direction * 180 / Math.PI));
+       mOrientation = direction;
+       mSteps = steps;
+       new ComputeStep().execute();
+
     }
 
 
@@ -240,113 +151,49 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_particle_button:
-                move(5);
-                mapView.addParticle(new Particle(mCurrentX, mCurrentY, 0, 2));
+                mParticles.addParticle(new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0, 2));
                 mapView.update();
+
                 break;
-            case R.id.delete_particle_button:
-                mapView.removeParticle();
+            case R.id.init_particles_button:
+                mParticles.initParticles();
                 mapView.update();
                 break;
             case R.id.clear_particle_button:
-                mapView.clear();
-                break;
-            case R.id.set_orientation_button:
-                mOrientationOffset = orientationValues[0];
-                float rad2deg = (float)(180.0f/Math.PI);
-                Log.wtf(tag, "Offset = " + mOrientationOffset + " (= " + (mOrientationOffset*rad2deg) + " deg)");
+                mapView.drawWalls();
+                mapView.update();
                 break;
             default:
                     break;
         }
     }
 
-    void move(int steps)
-    {
-        int x = mCurrentX + (int)(steps * Math.sin((double) mOrientation));
-        int y = mCurrentY + (int)(steps * Math.cos((double) mOrientation));
+    private class ComputeStep extends AsyncTask<Void, Void, Void> {
 
-        if(x < 0)
-            x = 0;
-        if(x > mapView.getMapWidth())
-            x = mapView.getMapWidth() - 1;
-        if(y < 0)
-            y = 0;
-        if(y > mapView.getMapHeight())
-            y = mapView.getMapHeight() - 1;
 
-        mCurrentX = x;
-        mCurrentY = y;
+        @Override
+        protected void onPreExecute() {}
 
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        switch(event.sensor.getType()) {
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                mags = event.values.clone();
-                break;
-            case Sensor.TYPE_ACCELEROMETER:
-                accels = event.values.clone();
-                //read sensor data and store to file
-                double x = event.values[0];
-                double y = event.values[1];
-                double z = event.values[2];
-
-                long timestamp = Calendar.getInstance().getTimeInMillis();
-
-                if(accSamples.getSize() < 40)//accSamples.getNumberOfSamples())
-                    accSamples.addSample(x,y,z, timestamp);
-                else
-                {
-                    stopMonitoring();
-                }
-                break;
+        @Override
+        protected Void doInBackground(Void ...params) {
+            mParticles.moveParticles(8  * mSteps, mOrientation);
+            return null;
         }
 
-        if (mags!=null && accels!=null) {
-            SensorManager.getRotationMatrix(Rotation, I, accels, mags);
-            float incl = SensorManager.getInclination(I);
-            if((incl > 25 || incl < 155) && !remapped_orientation)
-            {
-                float [] remappedRM = new float[16];
-                SensorManager.remapCoordinateSystem(Rotation, SensorManager.AXIS_X, SensorManager.AXIS_Z, remappedRM);
-                Rotation = remappedRM;
-                remapped_orientation = true;
-            }
-            else if((incl < 25 || incl > 155) && remapped_orientation){
-                float [] remappedRM = new float[16];
-                SensorManager.remapCoordinateSystem(Rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, remappedRM);
-                Rotation = remappedRM;
-                remapped_orientation = false;
-            }
 
-            SensorManager.getOrientation(Rotation, orientationValues);
+        @Override
+        protected void onProgressUpdate(Void ...params){
 
-
-            final float rad2deg = (float)(180.0f/Math.PI);
-
-            //if (mCount++ > 50) {
-                mOrientation = (orientationValues[0] - mOrientationOffset);
-                mCount = 0;
-             /*  Log.wtf("Compass", "yaw: " + ((orientationValues[0] - mOrientationOffset) *rad2deg) +
-                        "  pitch: " + (orientationValues[1]*rad2deg) +
-                        "  roll: " + (orientationValues[2]*rad2deg) +
-                        "  incl: " + (incl*rad2deg)
-                );*/
-         //   }
-
-            mOrientationText.setText(getResources().getString(R.string.orientation,mOrientation * rad2deg));
         }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            Log.wtf(tag, "Performed calculation");
+            mapView.update();
+        }
+
     }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
 
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-    }
 }

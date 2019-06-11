@@ -16,7 +16,7 @@ def main():
     testSet = []
 
     #features = getFeaturesFromRawData('./../Data/RawData', 60)
-    features = getFeaturesFromFile('./../Data/Trainingsdata.txt')
+    features = getFeaturesFromFile('./../Data/Trainingsdata1.txt')
 
     accuracy_sum = 0
 
