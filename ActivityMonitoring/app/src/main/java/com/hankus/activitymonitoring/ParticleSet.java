@@ -13,7 +13,6 @@ public class ParticleSet {
     public int NUM_PARTICLES = 1000;
 
     public ArrayList<Particle> mParticles;
-    public ArrayList<Particle> mOldParticles;
     public ArrayList<Point> mWalls;
     public ArrayList<Point> mFloor;
     public int mMaxX;
@@ -26,7 +25,6 @@ public class ParticleSet {
         mWalls = new ArrayList<Point>();
         mFloor = new ArrayList<Point>();
         mParticles = new ArrayList<Particle>();
-        mOldParticles = new ArrayList<Particle>();
         mParticleFilter = new ParticleFilter(this);
         mInit = true;
     }
@@ -57,12 +55,6 @@ public class ParticleSet {
         }
 
 
-    }
-
-    public void removeParticle()
-    {
-        Log.wtf(tag, "Remove Particle");
-        mParticles.remove(0);
     }
 
     public void clear()
