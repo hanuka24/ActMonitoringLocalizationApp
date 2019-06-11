@@ -7,13 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ParticleFilter {
-
-    private String tag = "ParticleFilter";
-
-    private int num_particles;
-
     private ParticleSet mParticleSet;
-    private MapView mMapView;
 
     public ParticleFilter(ParticleSet particleSet)
     {
@@ -23,33 +17,38 @@ public class ParticleFilter {
     public void initParticles()
     {
         Random r = new Random();
-        clear();
+        mParticleSet.clear();
         for (int i = 1; i <= mParticleSet.NUM_PARTICLES; i++) {
             Point p =  mParticleSet.mFloor.get(r.nextInt(mParticleSet.mFloor.size() - 1));
             mParticleSet.mParticles.add(new Particle(p.x, p.y, 0, 2));
+            mParticleSet.mOldParticles.add(new Particle(p.x, p.y, 0, 2));
         }
     }
 
     public void sense()
     {
-        for (int i = 0; i < mParticleSet.mParticles.size(); i++)
+        for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--)
         {
             Particle particle = mParticleSet.mParticles.get(i);
-            if(wallCollision(particle.x, particle.y))
+            if(wallCollision(particle))
             {
                 mParticleSet.mParticles.remove(i);
             }
-            else
-            {
-                calculateProbability(i);
-            }
-
         }
     }
 
     public void resampling()
     {
+        int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
+        int num_old_particles = mParticleSet.mParticles.size();
 
+        for(int i = 0; i < num_new_particle; i++) {
+            Random r = new Random();
+            Particle p = mParticleSet.mParticles.get(r.nextInt(num_old_particles - 1));
+            p.x += r.nextInt(3);
+            p.y += r.nextInt(3);
+            mParticleSet.addParticle(new Particle(p.x, p.y, p.orientation, p.weight));
+        }
     }
 
     public void moveParticles(int stepwidth, float direction) //move particles and remove if they move on wall
@@ -59,42 +58,46 @@ public class ParticleFilter {
             int x = mParticleSet.mParticles.get(i).x + (int)(stepwidth * Math.sin((double) direction));
             int y = mParticleSet.mParticles.get(i).y + (int)(stepwidth * Math.cos((double) direction));
 
-            //if(mFloor.contains(new Point(x,y)) && !outOfBound(x,y))
             mParticleSet.mParticles.set(i, new Particle(x,y, mParticleSet.mParticles.get(i).orientation, mParticleSet.mParticles.get(i).weight));
-//            else
-//                mParticles.remove(i);
         }
     }
 
-    public boolean wallCollision(int x, int y)
+    public boolean wallCollision(Particle particle)
     {
+        Point p = new Point(particle.x, particle.y);
+        if(mParticleSet.mFloor.contains(p) && !outOfBound(particle.x, particle.y))
+            return false;
+        else
+            return true;
+    }
+
+    private boolean crossedWall(Particle new_particle, Particle old_particle)
+    {
+
+//        for(Point point : mParticleSet.mWalls)
+//        {
+//            if(old_particle.x > new_particle.x)
+//            {
+//                if(point.x < old_particle.x && point.x > new_particle.x
+//                    && point.y < old_particle.y && point.y > new_particle)
+//                {
+//                    return true;
+//                }
+//            }
+//        }
+        return false;
+    }
+
+    private boolean outOfBound(int x, int y)
+    {
+        if(x < 0 || x >= mParticleSet.mMaxX || y < 0 || y >= mParticleSet.mMaxY)
+            return true;
+
         return false;
     }
 
     public void updateWeights(int i)
     {
-        float sum = 0f;
-
-        for (Particle particle : mParticleSet.mParticles) {
-            sum += particle.probability;
-        }
-
-        mParticleSet.mParticles.get(i).weight = mParticleSet.mParticles.get(i).probability / sum;
-    }
-
-    public void calculateProbability(int i)
-    {
-
-    }
-
-    public void killParticles()
-    {
-
-    }
-
-    public void clear()
-    {
-        Log.wtf(tag, "Clear all particles");
-        mParticleSet.mParticles.clear();
+        mParticleSet.mParticles.get(i).weight = 1 / mParticleSet.mParticles.size();
     }
 }

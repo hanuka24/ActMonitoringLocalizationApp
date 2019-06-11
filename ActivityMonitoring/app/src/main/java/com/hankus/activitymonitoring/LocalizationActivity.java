@@ -4,29 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.hardware.GeomagneticField;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
 import static java.util.Arrays.sort;
 
@@ -51,7 +36,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
     private TextView mOrientationText;
     private TextView mTextDebug;
-    private TextView mStepCount;
+    private TextView mStepCountText;
 
     Intent serviceIntent;
     SensingService sensingService;
@@ -86,7 +71,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
         mTextDebug = (TextView) findViewById(R.id.localization_debug);
-        mStepCount = (TextView) findViewById(R.id.step_count);
+        mStepCountText = (TextView) findViewById(R.id.step_count);
 
         mParticles = new ParticleSet();
         mapView.setParticleSet(mParticles);
@@ -133,11 +118,11 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void makeStep(int steps, float direction)
     {
        Log.wtf(tag, "Movement detected, move particles");
+       mStepCountText.setText(getResources().getString(R.string.step_count, steps));
        mOrientationText.setText(getResources().getString(R.string.orientation, direction * 180 / Math.PI));
        mOrientation = direction;
        mSteps = steps;
        new ComputeStep().execute();
-
     }
 
 
@@ -176,7 +161,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected Void doInBackground(Void ...params) {
-            mParticles.moveParticles(8  * mSteps, mOrientation);
+            mParticles.doParticleFilter(8 * mSteps, mOrientation);
             return null;
         }
 

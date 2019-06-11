@@ -13,21 +13,22 @@ public class ParticleSet {
     public int NUM_PARTICLES = 1000;
 
     public ArrayList<Particle> mParticles;
+    public ArrayList<Particle> mOldParticles;
     public ArrayList<Point> mWalls;
     public ArrayList<Point> mFloor;
     public int mMaxX;
     public int mMaxY;
-    public int mMapHeight;
-    public int mMapWidth;
     private ParticleFilter mParticleFilter;
+    private boolean mInit;
 
     ParticleSet()
     {
-        mParticles = new ArrayList<Particle>();
         mWalls = new ArrayList<Point>();
         mFloor = new ArrayList<Point>();
         mParticles = new ArrayList<Particle>();
+        mOldParticles = new ArrayList<Particle>();
         mParticleFilter = new ParticleFilter(this);
+        mInit = true;
     }
 
     public void initParticles()
@@ -41,17 +42,21 @@ public class ParticleSet {
         mParticles.add(particle);
     }
 
-    public void moveParticles(int stepwidth, float direction) //move particles and remove if they move on wall
+    public void doParticleFilter(int stepwidth, float direction)
     {
-        mParticleFilter.moveParticles(stepwidth, direction);
-    }
+        if(mInit){
+            mParticleFilter.initParticles();
+            mParticleFilter.moveParticles(stepwidth, direction);
+            mInit = false;
+        }
+        else
+        {
+            mParticleFilter.sense();
+            mParticleFilter.resampling();
+            mParticleFilter.moveParticles(stepwidth, direction);
+        }
 
-    private boolean outOfBound(int x, int y)
-    {
-        if(x < 0 || x >= mMaxX || y < 0 || y >= mMaxY)
-            return true;
 
-        return false;
     }
 
     public void removeParticle()
