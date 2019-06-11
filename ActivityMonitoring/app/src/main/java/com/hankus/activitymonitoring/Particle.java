@@ -6,6 +6,7 @@ public class Particle {
     public float weight;
     // angle in degrees
     public float orientation;
+    public float probability;
 
     Particle(int x, int y, float orientation, float weight)
     {

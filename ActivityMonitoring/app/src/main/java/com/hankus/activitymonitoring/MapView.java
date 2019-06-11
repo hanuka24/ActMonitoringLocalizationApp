@@ -58,6 +58,7 @@ public class MapView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w;
         height = h;
+
         Log.wtf(tag, "Width = " + w + "; Height = " + h);
     }
 
@@ -76,6 +77,8 @@ public class MapView extends View {
     void addParticle(Particle particle)
     {
         Log.wtf(tag, "Add Particle");
+        Log.wtf(tag, "x = " + particle.x);
+        Log.wtf(tag, "y = " + particle.y);
         mParticles.add(particle);
     }
 

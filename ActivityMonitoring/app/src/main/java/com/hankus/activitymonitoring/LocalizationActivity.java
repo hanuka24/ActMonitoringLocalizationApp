@@ -63,6 +63,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
     long start_time;
 
+    private boolean remapped_orientation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         idle_threshold = 0.8f;
         walking_threshold = 0.7f;
         state = "Debug";
+        remapped_orientation = false;
 
 
         mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
@@ -149,7 +152,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         if(state.equals("WALKING"))
         {
-            move((int) 5);
+            move((int) 50);
             mapView.addParticle(new Particle(mCurrentX, mCurrentY, 0, 1));
             mapView.update();
         }
@@ -226,36 +229,6 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    public void initialBelief()
-    {
-
-    }
-
-    public void sense()
-    {
-
-    }
-
-    public void resampling()
-    {
-
-    }
-
-
-    public void detectWall()
-    {
-
-    }
-
-    public void updateWeights()
-    {
-
-    }
-
-    public void killParticles()
-    {
-
-    }
 
     @Override
     public void finish() {
@@ -333,12 +306,26 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         if (mags!=null && accels!=null) {
             SensorManager.getRotationMatrix(Rotation, I, accels, mags);
+            float incl = SensorManager.getInclination(I);
+            if((incl > 25 || incl < 155) && !remapped_orientation)
+            {
+                float [] remappedRM = new float[16];
+                SensorManager.remapCoordinateSystem(Rotation, SensorManager.AXIS_X, SensorManager.AXIS_Z, remappedRM);
+                Rotation = remappedRM;
+                remapped_orientation = true;
+            }
+            else if((incl < 25 || incl > 155) && remapped_orientation){
+                float [] remappedRM = new float[16];
+                SensorManager.remapCoordinateSystem(Rotation, SensorManager.AXIS_X, SensorManager.AXIS_Y, remappedRM);
+                Rotation = remappedRM;
+                remapped_orientation = false;
+            }
+
             SensorManager.getOrientation(Rotation, orientationValues);
 
 
             final float rad2deg = (float)(180.0f/Math.PI);
 
-            float incl = SensorManager.getInclination(I);
             //if (mCount++ > 50) {
                 mOrientation = (orientationValues[0] - mOrientationOffset);
                 mCount = 0;
