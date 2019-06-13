@@ -25,6 +25,7 @@ public class MapView extends View {
 
     private Canvas mCanvas;
     private Paint mPaint;
+    private Paint mPaintPos;
     private String tag = "MapView";
     private Bitmap mBackground;
     private ParticleSet mParticleSet;
@@ -64,6 +65,8 @@ public class MapView extends View {
             canvas.drawCircle(p.getX(), p.getY(), p.getWeight() * mParticleSet.NUM_PARTICLES, mPaint);
         }
 
+        canvas.drawCircle(mParticleSet.posX, mParticleSet.posY, 3, mPaintPos);
+
     }
 
 
@@ -99,9 +102,11 @@ public class MapView extends View {
         mParticleSet.mMaxY = mWidth;
         mParticleSet.mMaxX = mHeight;
 
-        mParticleSet.mScaleMeter = mHeight / 18 * mScaleY;
+        mParticleSet.mScaleMeterY = mHeight / 18 * mScaleY;
+        mParticleSet.mScaleMeterX = mHeight / 18 * mScaleX;
 
-        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeter);
+        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterX);
+        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterY);
 
         Walls walls = new Walls();
         walls.scaleWalls(mScaleX, mScaleY);
@@ -112,6 +117,10 @@ public class MapView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(ResourcesCompat.getColor(getResources(),
                 R.color.colorPrimaryDark, null));
+
+        mPaintPos = new Paint();
+        mPaintPos.setStyle(Paint.Style.FILL);
+        mPaintPos.setColor(0xFFFF0000);
 
     }
 
@@ -138,15 +147,17 @@ public class MapView extends View {
                 int y_start = (p.startPoint.y > p.endPoint.y) ? p.endPoint.y : p.startPoint.y;
                 int y_end = (p.startPoint.y > p.endPoint.y) ? p.startPoint.y : p.endPoint.y;
                 for(int i = 0; i < y_end - y_start; i++)
-                    mParticleSet.mParticles.add(new Particle((int)((float)p.startPoint.x), (int)((float)(y_start + i)), 3.0f / mParticleSet.NUM_PARTICLES));
+                    mParticleSet.mParticles.add(new Particle((int)((float)p.startPoint.x), (int)((float)(y_start + i)), 1.0f / mParticleSet.NUM_PARTICLES));
             }
-            else
+            else if(p.startPoint.y == p.endPoint.y)
             {
                 int x_start = (p.startPoint.x > p.endPoint.x) ? p.endPoint.x : p.startPoint.x;
                 int x_end = (p.startPoint.x > p.endPoint.x) ? p.startPoint.x : p.endPoint.x;
                 for(int i = 0; i < x_end - x_start; i++)
-                    mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.startPoint.y), 3.0f / mParticleSet.NUM_PARTICLES));
+                    mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.startPoint.y), 1.0f / mParticleSet.NUM_PARTICLES));
             }
+            else
+                Log.wtf(tag, "ERROR");
         }
     }
 

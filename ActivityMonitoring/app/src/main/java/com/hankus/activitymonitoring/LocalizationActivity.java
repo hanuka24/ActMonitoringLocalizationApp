@@ -154,24 +154,13 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-//    private class senseMovement extends AsyncTask<Pair<Integer, Float>, Void, Void>{
-//
-//        @Override
-//        protected Void doInBackground(Pair<Integer, Float>... param) {
-//            Log.wtf(tag, "Movement detected, move particles");
-//            mStepCountText.setText(getResources().getString(R.string.step_count, param[0].first));
-//            mOrientationText.setText(getResources().getString(R.string.orientation, param[0].second * 180 / Math.PI));
-//            mOrientation = param[0].second;
-//            mSteps = param[0].first;
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void params) {
-//            Log.wtf(tag, "Compute Step");
-//            new ComputeStep().execute();
-//        }
-//    }
+    public void updateActivity(String activity)
+    {
+        Log.wtf(tag, "Update activity");
+        mTextDebug.setText(activity);
+        if(activity == "IDLE")
+            mStepCountText.setText(getResources().getString(R.string.step_count, 0));
+    }
 
     private class ComputeStep extends AsyncTask<Void, Void, Void> {
 

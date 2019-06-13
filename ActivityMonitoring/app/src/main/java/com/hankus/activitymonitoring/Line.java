@@ -21,8 +21,8 @@ public class Line {
 
     //https://gist.github.com/coleww/9403691
     public boolean intersectsWithLine(Point start, Point end) {
-        float bx = (float) (endPoint.x - startPoint.x);
-        float by = (float) (endPoint.y - startPoint.y);
+        float bx = (float) (endPoint.x- startPoint.x);
+        float by = (float) (endPoint.y - startPoint.y) + 2;
         float dx = end.x - start.x;
         float dy = end.y - start.y;
         float b_dot_d_perp = bx * dy - by * dx;

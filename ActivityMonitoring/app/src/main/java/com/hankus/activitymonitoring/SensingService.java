@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -60,9 +61,20 @@ public class SensingService extends Service implements SensorEventListener {
     float mOrientationOffset;
     float mOrientation;
 
-    public static final float TWENTY_FIVE_DEGREE_IN_RADIAN = 0.436332313f;
-    public static final float ONE_FIFTY_FIVE_DEGREE_IN_RADIAN = 2.7052603f;
+    private ArrayList<Float> mOrientations;
 
+
+    public float getMedian(){
+        Collections.sort(mOrientations);
+
+        float middle = mOrientations.size()/2;
+        if (mOrientations.size()%2 == 1) {
+            middle = (mOrientations.get(mOrientations.size()/2) + mOrientations.get(mOrientations.size()/2 - 1))/2;
+        } else {
+            middle = mOrientations.get(mOrientations.size() / 2);
+        }
+        return middle;
+    }
 
     NotificationManager notificationManager;
     NotificationCompat.Builder mBuilder;
@@ -102,7 +114,7 @@ public class SensingService extends Service implements SensorEventListener {
         {
             mWasWalking = false;
             Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((int)mWalkingTime/mStepTime + 1, mOrientation + mOrientationOffset);
+            activity.makeStep((int)mWalkingTime/mStepTime + 1, getMedian() + mOrientationOffset);
         }
         else
             startMonitoring();
@@ -115,6 +127,7 @@ public class SensingService extends Service implements SensorEventListener {
         //Do what you need in onStartCommand when service has been started
 
         accSamples = new AccData();
+        mOrientations = new ArrayList<>();
 
         //init Sensor
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -144,7 +157,7 @@ public class SensingService extends Service implements SensorEventListener {
         mOrientation = 0.1f;
 
         mSensorManager.registerListener(this, mSensorAcc, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_GAME);
 
         return START_NOT_STICKY;
     }
@@ -184,6 +197,7 @@ public class SensingService extends Service implements SensorEventListener {
             {
                 SensorManager.getOrientation(Rotation, orientationValues);
                 mOrientation = (-orientationValues[0] * 0.9f + mOrientation * 0.1f);
+                mOrientations.add(-orientationValues[0]);
                 mags = null;
                 accels = null;
             }
@@ -210,6 +224,7 @@ public class SensingService extends Service implements SensorEventListener {
     //callbacks interface for communication with service clients!
     public interface Callbacks{
         public void makeStep(int steps, float direction);
+        public void updateActivity(String activity);
     }
 
 
@@ -224,6 +239,7 @@ public class SensingService extends Service implements SensorEventListener {
         // System.out.println("Autocorrelation " + autocorrelation_max);
         if(standard_deviation < idle_threshold)
         {
+            activity.updateActivity("IDLE");
             if(!state.equals("IDLE"))
             {
                 state = "IDLE";
@@ -231,9 +247,12 @@ public class SensingService extends Service implements SensorEventListener {
                 start_time = 0;
                 mWasWalking = true;
             }
+            else
+             mOrientations.clear();
         }
         else if(autocorrelation_max > walking_threshold && !state.equals("WALKING"))
         {
+            activity.updateActivity("WALKING");
             state = "WALKING";
             start_time = System.currentTimeMillis();
         }

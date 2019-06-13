@@ -10,15 +10,19 @@ import java.util.Random;
 
 public class ParticleSet {
     private String tag = "ParticleSet";
-    public int NUM_PARTICLES = 3500;
+    public int NUM_PARTICLES = 6000;
 
     public ArrayList<Particle> mParticles;
     public ArrayList<Line> mWalls;
     public ArrayList<Point> mFloor;
     public int mMaxX;
     public int mMaxY;
-    public float mScaleMeter;
+    public float mScaleMeterX;
+    public float mScaleMeterY;
     private ParticleFilter mParticleFilter;
+
+    public int posX;
+    public int posY;
 
     ParticleSet()
     {
@@ -26,6 +30,8 @@ public class ParticleSet {
         mFloor = new ArrayList<Point>();
         mParticles = new ArrayList<Particle>();
         mParticleFilter = new ParticleFilter(this);
+        posX = 0;
+        posY = 0;
     }
 
     public void initParticles()
@@ -45,6 +51,15 @@ public class ParticleSet {
     }
 
 
+    public Particle createRandomValidParticle()
+    {
+        Random r = new Random();
+        Particle p =  mParticles.get(r.nextInt(mParticles.size() - 1));
+        return new Particle(p);
+    }
+
+
+
     public void addParticle(Particle particle)
     {
         //Log.wtf(tag, "Add Particle");
@@ -55,7 +70,9 @@ public class ParticleSet {
     {
         mParticleFilter.moveParticles(stepwidth, direction);
         mParticleFilter.updateWeight();
+       // mParticleFilter.sense();
         mParticleFilter.resampling();
+        mParticleFilter.positioning();
     }
 
     public void clear()
