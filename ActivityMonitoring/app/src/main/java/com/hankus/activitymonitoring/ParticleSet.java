@@ -10,16 +10,16 @@ import java.util.Random;
 
 public class ParticleSet {
     private String tag = "ParticleSet";
+
     public int NUM_PARTICLES = 6000;
 
     public ArrayList<Particle> mParticles;
     public ArrayList<Line> mWalls;
     public ArrayList<Point> mFloor;
-    public int mMaxX;
-    public int mMaxY;
+
     public float mScaleMeterX;
     public float mScaleMeterY;
-    private ParticleFilter mParticleFilter;
+    public ParticleFilter mParticleFilter;
 
     public int posX;
     public int posY;
@@ -69,8 +69,8 @@ public class ParticleSet {
     public void doParticleFilter(int stepwidth, float direction)
     {
         mParticleFilter.moveParticles(stepwidth, direction);
-        mParticleFilter.updateWeight();
-       // mParticleFilter.sense();
+       // mParticleFilter.updateWeight();
+        mParticleFilter.sense();
         mParticleFilter.resampling();
         mParticleFilter.positioning();
     }

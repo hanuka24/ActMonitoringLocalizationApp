@@ -23,11 +23,9 @@ import java.util.Random;
 
 public class MapView extends View {
 
-    private Canvas mCanvas;
     private Paint mPaint;
     private Paint mPaintPos;
     private String tag = "MapView";
-    private Bitmap mBackground;
     private ParticleSet mParticleSet;
 
     public float mScaleY;
@@ -35,10 +33,7 @@ public class MapView extends View {
     public int mWidth;
     public int mHeight;
 
-    public MapView(Context context) {
-        super(context);
-
-    }
+    public MapView(Context context) { super(context); }
 
     public MapView(Context context, AttributeSet attrst) {
         super(context, attrst);
@@ -53,30 +48,25 @@ public class MapView extends View {
         mParticleSet = particleSet;
     }
 
-
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-
         Log.wtf("MapView","OnDraw (Num = " + mParticleSet.mParticles.size() + ")");
 
         for (Particle p: mParticleSet.mParticles
              ) {
             canvas.drawCircle(p.getX(), p.getY(), p.getWeight() * mParticleSet.NUM_PARTICLES, mPaint);
         }
-
         canvas.drawCircle(mParticleSet.posX, mParticleSet.posY, 3, mPaintPos);
 
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mWidth = w;
         mHeight = h;
-
+        //init Map, once the size is known
         Log.wtf(tag, "Width = " + w + "; Height = " + h);
-
         initMap();
     }
 
@@ -84,35 +74,35 @@ public class MapView extends View {
     {
         Drawable background_image = ResourcesCompat.getDrawable(getResources(), R.drawable.iti_floorplan2, null);
 
-        mScaleX = mWidth *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getWidth() ;
+        mScaleX = mWidth *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getWidth();
         mScaleY = mHeight *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getHeight();
 
+        mParticleSet.mScaleMeterY = mHeight * mScaleY / (18.0f); //appr 18 m height
+        mParticleSet.mScaleMeterX = mParticleSet.mScaleMeterY * mScaleX / mScaleY;
+
+        Log.wtf(tag, "scaleX: " + mScaleX);
+        Log.wtf(tag, "scaleX: " + mScaleY);
+        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterX);
+        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterY);
+
         Bitmap background = Bitmap.createScaledBitmap(((BitmapDrawable)background_image).getBitmap(), mWidth, mHeight, true);
-        mBackground = background;
         this.setBackground(new BitmapDrawable(getResources(), background));
 
-        for(int i = 0; i < mBackground.getWidth(); i++) {
+        //retrieve floor pixels
+        for(int i = 0; i < background.getWidth(); i++) {
 
-            for (int j = 0; j < mBackground.getHeight(); j++) {
-                if (mBackground.getPixel(i, j) == 0xFFFFFFFF)
+            for (int j = 0; j < background.getHeight(); j++) {
+                if (background.getPixel(i, j) == 0xFFFFFFFF)
                     mParticleSet.mFloor.add(new Point(i, j));
             }
         }
 
-        mParticleSet.mMaxY = mWidth;
-        mParticleSet.mMaxX = mHeight;
-
-        mParticleSet.mScaleMeterY = mHeight / 18 * mScaleY;
-        mParticleSet.mScaleMeterX = mHeight / 18 * mScaleX;
-
-        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterX);
-        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterY);
-
+        //Scale walls according to screen density / picture size
         Walls walls = new Walls();
         walls.scaleWalls(mScaleX, mScaleY);
-
         mParticleSet.mWalls.addAll(walls.getScaledWalls());
 
+        //Set paints for particles and position
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(ResourcesCompat.getColor(getResources(),
@@ -120,22 +110,14 @@ public class MapView extends View {
 
         mPaintPos = new Paint();
         mPaintPos.setStyle(Paint.Style.FILL);
-        mPaintPos.setColor(0xFFFF0000);
+        mPaintPos.setColor(0xFFFF00FF);
 
     }
-
 
     void update()
     {
         invalidate();
     }
-
-    int getMapWidth()
-    {
-        return mWidth;
-    }
-
-    int getMapHeight() { return mHeight; }
 
     public void drawWalls()
     {
@@ -157,7 +139,7 @@ public class MapView extends View {
                     mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.startPoint.y), 1.0f / mParticleSet.NUM_PARTICLES));
             }
             else
-                Log.wtf(tag, "ERROR");
+                Log.wtf(tag, "Invalid wall");
         }
     }
 

@@ -7,10 +7,10 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/clear_particle_button"
+        android:id="@+id/show_walls_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear All"
+        android:text="Show walls"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.101"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,14 +32,13 @@
 
     <com.hankus.activitymonitoring.MapView
         android:id="@+id/map_view"
-        android:layout_width="match_parent"
-        android:layout_height="163dp"
+        android:layout_width="371dp"
+        android:layout_height="207dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.336" />
+        app:layout_constraintVertical_bias="0.32" />
 
     <Button
         android:id="@+id/add_particle_button"

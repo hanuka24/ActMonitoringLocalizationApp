@@ -44,11 +44,7 @@ public class SensingService extends Service implements SensorEventListener {
     private String state;
     long start_time;
 
-    int mCount;
-    int mCurrentX;
-    int mCurrentY;
-    int mStepTime;
-
+    int STEPTIME = 750; //ms
 
     private float[] Rotation;
     private float[] I;
@@ -56,25 +52,10 @@ public class SensingService extends Service implements SensorEventListener {
     private float[] accels;
     private float[] orientationValues = {0f, 0f, 0f};
 
-
-
     float mOrientationOffset;
     float mOrientation;
 
     private ArrayList<Float> mOrientations;
-
-
-    public float getMedian(){
-        Collections.sort(mOrientations);
-
-        float middle = mOrientations.size()/2;
-        if (mOrientations.size()%2 == 1) {
-            middle = (mOrientations.get(mOrientations.size()/2) + mOrientations.get(mOrientations.size()/2 - 1))/2;
-        } else {
-            middle = mOrientations.get(mOrientations.size() / 2);
-        }
-        return middle;
-    }
 
     NotificationManager notificationManager;
     NotificationCompat.Builder mBuilder;
@@ -100,8 +81,10 @@ public class SensingService extends Service implements SensorEventListener {
     private void stopMonitoring()
     {
         mSensorManager.unregisterListener(this, mSensorAcc);
-        accSamples.extractFeatures();
 
+
+        //check for movement
+        accSamples.extractFeatures();
         double mean = calculateXYZMean(accSamples.features.x_mean, accSamples.features.y_mean, accSamples.features.z_mean);
         calculateStandardDeviation(mean);
         calculateAutocorrelation(mean);
@@ -110,11 +93,12 @@ public class SensingService extends Service implements SensorEventListener {
         variance = 0.0;
         standard_deviation = 0.0;
 
-        if(state.equals("IDLE") && mWasWalking)
+        if(state.equals("WALKING"))
         {
             mWasWalking = false;
             Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((int)mWalkingTime/mStepTime + 1, getMedian() + mOrientationOffset);
+            mOrientations.clear();
+            activity.makeStep((int)mWalkingTime/STEPTIME, getOrientationMedian() + mOrientationOffset);
         }
         else
             startMonitoring();
@@ -140,11 +124,10 @@ public class SensingService extends Service implements SensorEventListener {
         I = new float[16];
         mags = new float[3];
         accels = new float[3];
-        mCount = 0;
-        mCurrentX = 100;
-        mCurrentY = 200;
+
         start_time = 0;
-        mStepTime = 750; // in milliseconds
+
+
         variance = 0.0;
         standard_deviation = 0.0;
         autocorrelation_max = 0.0;
@@ -154,7 +137,6 @@ public class SensingService extends Service implements SensorEventListener {
         mWasWalking = false;
 
         mOrientationOffset = 1.95f;
-        mOrientation = 0.1f;
 
         mSensorManager.registerListener(this, mSensorAcc, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_GAME);
@@ -165,48 +147,6 @@ public class SensingService extends Service implements SensorEventListener {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        switch(event.sensor.getType()) {
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                mags = event.values.clone();
-                break;
-            case Sensor.TYPE_ACCELEROMETER:
-                //read sensor data and store to file
-                double x = event.values[0];
-                double y = event.values[1];
-                double z = event.values[2];
-
-
-                accels = event.values.clone();
-
-                long timestamp = Calendar.getInstance().getTimeInMillis();
-
-                if(accSamples.getSize() < 40)//accSamples.getNumberOfSamples())
-                    accSamples.addSample(x,y,z, timestamp);
-                else
-                    stopMonitoring();
-                break;
-        }
-
-        if (mags!=null && accels!=null) {
-            boolean success =  SensorManager.getRotationMatrix(Rotation, I, accels, mags);
-            if(success)
-            {
-                SensorManager.getOrientation(Rotation, orientationValues);
-                mOrientation = (-orientationValues[0] * 0.9f + mOrientation * 0.1f);
-                mOrientations.add(-orientationValues[0]);
-                mags = null;
-                accels = null;
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     //returns the instance of the service
@@ -225,6 +165,46 @@ public class SensingService extends Service implements SensorEventListener {
     public interface Callbacks{
         public void makeStep(int steps, float direction);
         public void updateActivity(String activity);
+    }
+
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        switch(event.sensor.getType()) {
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mags = event.values.clone();
+                break;
+            case Sensor.TYPE_ACCELEROMETER:
+                //read sensor data and store to file
+                double x = event.values[0];
+                double y = event.values[1];
+                double z = event.values[2];
+
+                accels = event.values.clone();
+
+                if(accSamples.getSize() < 40)//accSamples.getNumberOfSamples())
+                    accSamples.addSample(x,y,z, 0);
+                else
+                    stopMonitoring();
+                break;
+        }
+
+        if (mags!=null && accels!=null) {
+            boolean success =  SensorManager.getRotationMatrix(Rotation, I, accels, mags);
+            if(success)
+            {
+                SensorManager.getOrientation(Rotation, orientationValues);
+                mOrientations.add(-orientationValues[0]);
+                mags = null;
+                accels = null;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
 
@@ -247,8 +227,8 @@ public class SensingService extends Service implements SensorEventListener {
                 start_time = 0;
                 mWasWalking = true;
             }
-            else
-             mOrientations.clear();
+          //  else
+           //  mOrientations.clear();
         }
         else if(autocorrelation_max > walking_threshold && !state.equals("WALKING"))
         {
@@ -292,6 +272,23 @@ public class SensingService extends Service implements SensorEventListener {
 
         sort(autocorrelation);
         autocorrelation_max = autocorrelation[accData.size() - 1];
+    }
+
+//https://stackoverflow.com/questions/41117879/problems-finding-median-of-arraylist/41118061
+    public float getOrientationMedian(){
+
+        if(mOrientations.isEmpty())
+            return 0.0f;
+
+        Collections.sort(mOrientations);
+
+        float middle;
+        if (mOrientations.size()%2 == 1) {
+            middle = (mOrientations.get(mOrientations.size()/2) + mOrientations.get(mOrientations.size()/2 - 1))/2;
+        } else {
+            middle = mOrientations.get(mOrientations.size() / 2);
+        }
+        return middle;
     }
 
 }

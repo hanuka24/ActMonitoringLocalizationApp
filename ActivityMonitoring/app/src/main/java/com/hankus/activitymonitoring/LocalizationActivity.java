@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -21,17 +22,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     private MapView mapView;
     private String tag;
 
-    private Button mAddParticleButton;
-    private Button mInitParticleButton;
-    private Button mClearParticleButton;
-    private Button mSetOrientationButton;
-
-
     private ParticleSet mParticles;
-
-
-    Particle mMovingPoint;
-
     float mOrientation;
     int mSteps;
 
@@ -42,8 +33,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     Intent serviceIntent;
     SensingService sensingService;
 
+    boolean mMoveSinglePoint;
 
-    private boolean remapped_orientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,35 +43,28 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         tag = "Localization Activity";
 
-        Log.wtf(tag, "onCreate");
-
         //init Background map
         mapView = findViewById(R.id.map_view);
 
         //init Buttons
-        mAddParticleButton = findViewById(R.id.add_particle_button);
-        mAddParticleButton.setOnClickListener(this);
-        mInitParticleButton = findViewById(R.id.init_particles_button);
-        mInitParticleButton.setOnClickListener(this);
-        mClearParticleButton = findViewById(R.id.clear_particle_button);
-        mClearParticleButton.setOnClickListener(this);
-        mSetOrientationButton = findViewById(R.id.set_orientation_button);
-        mSetOrientationButton.setOnClickListener(this);
-
-        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2,5);
+        findViewById(R.id.add_particle_button).setOnClickListener(this);
+        findViewById(R.id.init_particles_button).setOnClickListener(this);
+        findViewById(R.id.show_walls_button).setOnClickListener(this);
+        findViewById(R.id.set_orientation_button).setOnClickListener(this);
 
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
         mTextDebug = (TextView) findViewById(R.id.localization_debug);
         mStepCountText = (TextView) findViewById(R.id.step_count);
 
+        //init Particles
         mParticles = new ParticleSet();
         mapView.setParticleSet(mParticles);
+
+        mMoveSinglePoint = false;
+
         //Start sensing
-
         serviceIntent = new Intent(LocalizationActivity.this, SensingService.class);
-
-
         startService(serviceIntent); //Starting the service
         bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE); //Binding to the service!
     }
@@ -104,15 +88,15 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         }
     };
 
-
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
-        Log.wtf(tag, "onResume");
-
-        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 5);
-
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_bot, R.anim.slide_in_top);
     }
 
     @Override
@@ -123,29 +107,31 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
        mOrientationText.setText(getResources().getString(R.string.orientation, direction * 180 / Math.PI));
        mOrientation = direction;
        mSteps = steps;
-       new ComputeStep().execute();
+       if(mMoveSinglePoint)
+           moveSinglePoint();
+       else
+        new ComputeStep().execute(); //apply particle filter in AsyncTask
     }
 
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_bot, R.anim.slide_in_top);
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_particle_button:
-                mParticles.addParticle(new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 2));
+                mParticles.clear();
+                Particle start = mParticles.createRandomParticle();
+                mParticles.posY = start.getY();
+                mParticles.posX = start.getX();
+                mMoveSinglePoint = true;
                 mapView.update();
-
                 break;
             case R.id.init_particles_button:
                 mParticles.initParticles();
                 mapView.update();
+                mMoveSinglePoint = false;
                 break;
-            case R.id.clear_particle_button:
+            case R.id.show_walls_button:
                 mapView.drawWalls();
                 mapView.update();
                 break;
@@ -156,10 +142,21 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
     public void updateActivity(String activity)
     {
-        Log.wtf(tag, "Update activity");
         mTextDebug.setText(activity);
         if(activity == "IDLE")
             mStepCountText.setText(getResources().getString(R.string.step_count, 0));
+    }
+
+    private void moveSinglePoint()
+    {
+        mParticles.posX = mParticles.posX  + (int)(mSteps * mParticles.mParticleFilter.STEPWIDTH*mParticles.mScaleMeterX * Math.sin((double) mOrientation));
+        mParticles.posY = mParticles.posY  + (int)(mSteps * mParticles.mParticleFilter.STEPWIDTH*mParticles.mScaleMeterY * Math.cos((double) mOrientation));
+
+        Log.wtf(tag, "Position X: " + mParticles.posX);
+        Log.wtf(tag, "Position Y: " + mParticles.posY);
+
+        mapView.update();
+        sensingService.startMonitoring();
     }
 
     private class ComputeStep extends AsyncTask<Void, Void, Void> {

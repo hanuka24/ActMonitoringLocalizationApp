@@ -13,9 +13,9 @@ public class ParticleFilter {
     private String tag = "ParticleFilter";
     private ParticleSet mParticleSet;
 
-    private int ORIENTATION_VARIANCE = 50; //degrees
-    private double STEPWIDTH_VARIANCE = 0.5; //m
-    private double STEPWIDTH = 0.6; //m
+    public int ORIENTATION_VARIANCE = 30; //degrees
+    public double STEPWIDTH_VARIANCE = 0.5; //m
+    public double STEPWIDTH = 0.6; //m
 
 
     public ParticleFilter(ParticleSet particleSet)
@@ -36,22 +36,22 @@ public class ParticleFilter {
 
     public void resampling()
     {
-       /* if(! mParticleSet.mParticles.isEmpty())
+        if(! mParticleSet.mParticles.isEmpty())
         {
             int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
             int num_old_particles = mParticleSet.mParticles.size();
 
             for(int i = 0; i < num_new_particle; i++) {
                 Random r = new Random();
-                if(r.nextFloat() < 0.1f)
+                if(r.nextFloat() < 0.05f)
                     mParticleSet.addParticle(mParticleSet.createRandomParticle());
                 else
                     mParticleSet.addParticle(mParticleSet.createRandomValidParticle());
             }
-        }*/
+        }
 
      //https://www.codeproject.com/Articles/865934/Object-Tracking-Particle-Filter-with-Ease
-        Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
+      /*  Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
         if(! mParticleSet.mParticles.isEmpty()) {
 
 
@@ -95,37 +95,10 @@ public class ParticleFilter {
                 }
             }
             mParticleSet.mParticles = new_particles;
-        }
-
-
-          /*  float min_cum_weight = cum_weights[mParticleSet.mParticles.size() - 1];
-            float max_cum_weight = cum_weights[0];
-            float init_weight = 1.0f / mParticleSet.NUM_PARTICLES;
-
-            Random rand = new Random();
-            float rand_weight = (rand.nextFloat() - 1) * init_weight;
-
-
-            for(int i = 0; i < mParticleSet.NUM_PARTICLES; i++)
-            {
-                int particle_idx = 0;
-                while (particle_idx < mParticleSet.NUM_PARTICLES - 1 && (cum_weights[particle_idx] < rand_weight || mParticleSet.mParticles.get(particle_idx).getWeight() == 0.0f)) //find particle's index
-                {
-                    particle_idx++;
-                }
-                if(mParticleSet.mParticles.get(particle_idx).getWeight() == 0.0f)
-                    new_particles.set(i, mParticleSet.createRandomParticle());
-                else
-                    new_particles.set(i, new Particle(mParticleSet.mParticles.get(particle_idx).getPosition(), 1.0f/mParticleSet.NUM_PARTICLES));
-
-                rand_weight += 1.0/init_weight;
-            }
-
-            Log.wtf(tag, "Number of new Particles: " + new_particles.size());
-           mParticleSet.mParticles = new_particles;
         }*/
     }
 
+    //only necessary if we resample with cdf
     public void updateWeight()
     {
         float sum_weight = 0.0f;
@@ -147,23 +120,21 @@ public class ParticleFilter {
             double orientation_var = (new Random().nextInt(ORIENTATION_VARIANCE) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
             double stepwidth_var = (new Random().nextDouble() * STEPWIDTH_VARIANCE * (new Random().nextBoolean() ? 1 : -1));
 
-            int x = p.getX() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterX / 2 * Math.sin((double) direction + orientation_var));
-            int y = p.getY() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterY  / 2* Math.cos((double) direction + orientation_var));
+            int x = p.getX() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterX * Math.sin((double) direction + orientation_var));
+            int y = p.getY() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterY * Math.cos((double) direction + orientation_var));
 
             //set Weight to zero, if physical constraints are violated
-//            if(!mParticleSet.mFloor.contains(p.getPosition()))
-
+            //if(!mParticleSet.mFloor.contains(p.getPosition())) //slow approach with walls as pixels
             if(crossedWall(new Point(x,y), p.getPosition()))
                 p.setWeight(0.0f);
             else
                 p.setPosition(x , y);
 
-
         }
         Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
     }
 
-
+    //Compute position by computing the median of x/y coordinates of all particles
     public void positioning()
     {
         if(mParticleSet.mParticles.isEmpty())
@@ -185,14 +156,6 @@ public class ParticleFilter {
         mParticleSet.posX = x.get(mParticleSet.NUM_PARTICLES / 2);
         mParticleSet.posY = y.get(mParticleSet.NUM_PARTICLES / 2);
 
-    }
-
-    public boolean wallCollision(Particle particle, int x, int y)
-    {
-        if(!crossedWall(new Point(x,y), particle.getPosition()))
-            return false;
-        else
-            return true;
     }
 
     private boolean crossedWall(Point new_point, Point old_point)
