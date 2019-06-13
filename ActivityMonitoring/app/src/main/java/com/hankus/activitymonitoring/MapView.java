@@ -29,26 +29,22 @@ public class MapView extends View {
     private Bitmap mBackground;
     private ParticleSet mParticleSet;
 
-    public int width;
-    public int height;
-    boolean mInitialized;
+    public float mScaleY;
+    public float mScaleX;
+    public int mWidth;
+    public int mHeight;
 
     public MapView(Context context) {
         super(context);
-        mInitialized = false;
 
     }
 
     public MapView(Context context, AttributeSet attrst) {
         super(context, attrst);
-
-        mInitialized = false;
     }
 
     public MapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mInitialized = false;
     }
 
     public void setParticleSet(ParticleSet particleSet)
@@ -65,7 +61,7 @@ public class MapView extends View {
 
         for (Particle p: mParticleSet.mParticles
              ) {
-            canvas.drawCircle(p.x, p.y, p.weight, mPaint);
+            canvas.drawCircle(p.getX(), p.getY(), p.getWeight() * mParticleSet.NUM_PARTICLES, mPaint);
         }
 
     }
@@ -73,8 +69,8 @@ public class MapView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        width = w;
-        height = h;
+        mWidth = w;
+        mHeight = h;
 
         Log.wtf(tag, "Width = " + w + "; Height = " + h);
 
@@ -84,37 +80,41 @@ public class MapView extends View {
     public void initMap()
     {
         Drawable background_image = ResourcesCompat.getDrawable(getResources(), R.drawable.iti_floorplan2, null);
-        Bitmap background = Bitmap.createScaledBitmap(((BitmapDrawable)background_image).getBitmap(), width, height, true);
+
+        mScaleX = mWidth *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getWidth() ;
+        mScaleY = mHeight *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getHeight();
+
+        Bitmap background = Bitmap.createScaledBitmap(((BitmapDrawable)background_image).getBitmap(), mWidth, mHeight, true);
         mBackground = background;
         this.setBackground(new BitmapDrawable(getResources(), background));
-
 
         for(int i = 0; i < mBackground.getWidth(); i++) {
 
             for (int j = 0; j < mBackground.getHeight(); j++) {
                 if (mBackground.getPixel(i, j) == 0xFFFFFFFF)
                     mParticleSet.mFloor.add(new Point(i, j));
-                else if (mBackground.getPixel(i, j) != 0xFFFF0000)
-                    mParticleSet.mWalls.add(new Point(i, j));
             }
         }
 
-        mParticleSet.mMaxY = height;
-        mParticleSet.mMaxX = width;
+        mParticleSet.mMaxY = mWidth;
+        mParticleSet.mMaxX = mHeight;
+
+        mParticleSet.mScaleMeter = mHeight / 18 * mScaleY;
+
+        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeter);
+
+        Walls walls = new Walls();
+        walls.scaleWalls(mScaleX, mScaleY);
+
+        mParticleSet.mWalls.addAll(walls.getScaledWalls());
 
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(ResourcesCompat.getColor(getResources(),
                 R.color.colorPrimaryDark, null));
 
-        mInitialized = true;
     }
 
-
-    boolean initialized()
-    {
-        return mInitialized;
-    }
 
     void update()
     {
@@ -123,17 +123,30 @@ public class MapView extends View {
 
     int getMapWidth()
     {
-        return width;
+        return mWidth;
     }
 
-    int getMapHeight() { return height; }
+    int getMapHeight() { return mHeight; }
 
     public void drawWalls()
     {
         mParticleSet.mParticles.clear();
-        for (Point p: mParticleSet.mWalls
-        ) {
-            mParticleSet.mParticles.add(new Particle(p.x, p.y, 0, 1));
+        for(Line p : mParticleSet.mWalls)
+        {
+            if(p.startPoint.x == p.endPoint.x)
+            {
+                int y_start = (p.startPoint.y > p.endPoint.y) ? p.endPoint.y : p.startPoint.y;
+                int y_end = (p.startPoint.y > p.endPoint.y) ? p.startPoint.y : p.endPoint.y;
+                for(int i = 0; i < y_end - y_start; i++)
+                    mParticleSet.mParticles.add(new Particle((int)((float)p.startPoint.x), (int)((float)(y_start + i)), 3.0f / mParticleSet.NUM_PARTICLES));
+            }
+            else
+            {
+                int x_start = (p.startPoint.x > p.endPoint.x) ? p.endPoint.x : p.startPoint.x;
+                int x_end = (p.startPoint.x > p.endPoint.x) ? p.startPoint.x : p.endPoint.x;
+                for(int i = 0; i < x_end - x_start; i++)
+                    mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.startPoint.y), 3.0f / mParticleSet.NUM_PARTICLES));
+            }
         }
     }
 

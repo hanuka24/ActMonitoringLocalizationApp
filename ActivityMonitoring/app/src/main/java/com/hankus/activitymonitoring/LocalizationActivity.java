@@ -67,7 +67,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         mSetOrientationButton = findViewById(R.id.set_orientation_button);
         mSetOrientationButton.setOnClickListener(this);
 
-        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
+        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2,5);
 
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
@@ -111,7 +111,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         Log.wtf(tag, "onResume");
 
-        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0,5);
+        mMovingPoint = new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 5);
 
     }
 
@@ -137,7 +137,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_particle_button:
-                mParticles.addParticle(new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 0, 2));
+                mParticles.addParticle(new Particle(mapView.getMapWidth()/2, mapView.getMapHeight()/2, 2));
                 mapView.update();
 
                 break;
@@ -181,7 +181,9 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected Void doInBackground(Void ...params) {
-            mParticles.doParticleFilter(12 * mSteps, mOrientation);
+
+            Log.wtf(tag, "Start calculation");
+            mParticles.doParticleFilter(mSteps, mOrientation);
             return null;
         }
 

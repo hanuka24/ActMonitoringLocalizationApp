@@ -2,6 +2,7 @@ package com.hankus.activitymonitoring;
 
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.provider.Telephony;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,34 +11,22 @@ import java.util.Random;
 public class ParticleFilter {
     private String tag = "ParticleFilter";
     private ParticleSet mParticleSet;
-    private boolean is_initialized;
+
+    private int ORIENTATION_VARIANCE = 80; //degrees
+    private double STEPWIDTH_VARIANCE = 0.5; //m
+    private double STEPWIDTH = 0.6; //m
+
 
     public ParticleFilter(ParticleSet particleSet)
     {
         this.mParticleSet = particleSet;
-        this.is_initialized = false;
-    }
-
-    public void initParticles()
-    {
-        if(!is_initialized)
-        {
-            Random r = new Random();
-            mParticleSet.clear();
-            for (int i = 0; i < mParticleSet.NUM_PARTICLES; i++) {
-                Point p =  mParticleSet.mFloor.get(r.nextInt(mParticleSet.mFloor.size() - 1));
-                mParticleSet.addParticle(new Particle(p.x, p.y, 0, 2));
-            }
-            is_initialized = true;
-        }
     }
 
     public void sense()
     {
         for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--)
         {
-            Particle particle = mParticleSet.mParticles.get(i);
-            if(mParticleSet.mParticles.get(i).weight == 0)
+            if( mParticleSet.mParticles.get(i).getWeight() == 0)
             {
                 removeParticle(i);
             }
@@ -46,86 +35,145 @@ public class ParticleFilter {
 
     public void resampling()
     {
-        int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
-        int num_old_particles = mParticleSet.mParticles.size();
+     /*   if(! mParticleSet.mParticles.isEmpty())
+        {
+            int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
+            int num_old_particles = mParticleSet.mParticles.size();
 
-        for(int i = 0; i < num_new_particle; i++) {
-            Random r = new Random();
-            Particle p = mParticleSet.mParticles.get(r.nextInt(num_old_particles - 1));
-            p.x += r.nextInt(3);
-            p.y += r.nextInt(3);
-            mParticleSet.addParticle(new Particle(p.x, p.y, p.orientation, p.weight));
+            for(Particle p : mParticleSet.mParticles)
+            {
+                p.setPosition(p.getX());
+            }
+
+            for(int i = 0; i < num_new_particle; i++) {
+                Random r = new Random();
+                Particle p = mParticleSet.mParticles.get(r.nextInt(num_old_particles - 1));
+                p.x += r.nextInt(RESAMPLE_VARIANCE);
+                p.y += r.nextInt(RESAMPLE_VARIANCE);
+                mParticleSet.addParticle(new Particle(p.x, p.y, p.orientation, p.weight));
+            }
+        }*/
+
+     //https://www.codeproject.com/Articles/865934/Object-Tracking-Particle-Filter-with-Ease
+        Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
+        if(! mParticleSet.mParticles.isEmpty()) {
+
+
+            ArrayList<Particle> new_particles = new ArrayList<Particle>(mParticleSet.NUM_PARTICLES);
+
+            // compute cumulative weights
+            float cum_weights[] = new float[mParticleSet.NUM_PARTICLES];
+            float cum_sum = 0;
+
+            for(int i = 0; i < mParticleSet.NUM_PARTICLES; i++)
+            {
+                cum_weights[i] = cum_sum;
+                cum_sum += mParticleSet.mParticles.get(i).getWeight();
+            }
+
+            Random rng = new Random();
+           // double p_step = 1.0 / Ns; // probability step size for resampling (new sample weight)
+            float init_weight = 1.0f / mParticleSet.NUM_PARTICLES;
+            float p_resample = (rng.nextFloat() - 1) * init_weight;
+            int cdf_idx = 0;
+
+            for (int i = 0; i < mParticleSet.NUM_PARTICLES; i++) {
+                p_resample += init_weight;
+
+                while (cdf_idx < (mParticleSet.NUM_PARTICLES - 1) && (p_resample > cum_weights[cdf_idx] ||
+                        mParticleSet.mParticles.get(cdf_idx).getWeight() == 0.0f)) {
+                    cdf_idx++;
+                }
+
+                if (mParticleSet.mParticles.get(cdf_idx).getWeight() == 0.0f)
+                    new_particles.add(new Particle(new_particles.get(i - 1)));
+                else
+                    new_particles.add(new Particle(mParticleSet.mParticles.get(cdf_idx)));
+
+                new_particles.get(i).setWeight(init_weight);
+            }
+            mParticleSet.mParticles = new_particles;
+
+
+          /*  float min_cum_weight = cum_weights[mParticleSet.mParticles.size() - 1];
+            float max_cum_weight = cum_weights[0];
+            float init_weight = 1.0f / mParticleSet.NUM_PARTICLES;
+
+            Random rand = new Random();
+            float rand_weight = (rand.nextFloat() - 1) * init_weight;
+
+
+            for(int i = 0; i < mParticleSet.NUM_PARTICLES; i++)
+            {
+                int particle_idx = 0;
+                while (particle_idx < mParticleSet.NUM_PARTICLES - 1 && (cum_weights[particle_idx] < rand_weight || mParticleSet.mParticles.get(particle_idx).getWeight() == 0.0f)) //find particle's index
+                {
+                    particle_idx++;
+                }
+                if(mParticleSet.mParticles.get(particle_idx).getWeight() == 0.0f)
+                    new_particles.set(i, mParticleSet.createRandomParticle());
+                else
+                    new_particles.set(i, new Particle(mParticleSet.mParticles.get(particle_idx).getPosition(), 1.0f/mParticleSet.NUM_PARTICLES));
+
+                rand_weight += 1.0/init_weight;
+            }
+
+            Log.wtf(tag, "Number of new Particles: " + new_particles.size());
+           mParticleSet.mParticles = new_particles;*/
         }
     }
 
-    public void moveParticles(int stepwidth, float direction) //move particles and remove if they move on wall
+    public void updateWeight()
     {
-        for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--) {
+        float sum_weight = 0.0f;
+        for(Particle p : mParticleSet.mParticles)
+        {
+            sum_weight += p.getWeight();
+        }
 
-            double orientation_randomness = (new Random().nextInt(25) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
+        for(Particle p : mParticleSet.mParticles)
+        {
+            p.setWeight(p.getWeight()/sum_weight);
+        }
+    }
 
-            int x = mParticleSet.mParticles.get(i).x + (int)(stepwidth * Math.sin((double) direction + orientation_randomness));
-            int y = mParticleSet.mParticles.get(i).y + (int)(stepwidth * Math.cos((double) direction + orientation_randomness));
+    public void moveParticles(int steps, float direction) //move particles and remove if they move on wall
+    {
+        for(Particle p : mParticleSet.mParticles)
+        {
+            double orientation_var = (new Random().nextInt(ORIENTATION_VARIANCE) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
+            double stepwidth_var = (new Random().nextDouble() * STEPWIDTH_VARIANCE * (new Random().nextBoolean() ? 1 : -1));
 
-            if(!wallCollision(i, x, y))
-            {
-                mParticleSet.mParticles.set(i, new Particle(x,y, mParticleSet.mParticles.get(i).orientation, mParticleSet.mParticles.get(i).weight));
-            }
+            int x = p.getX() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeter / 2 * Math.sin((double) direction + orientation_var));
+            int y = p.getY() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeter  / 2* Math.cos((double) direction + orientation_var));
+
+            //set Weight to zero, if physical constraints are violated
+            if(wallCollision(p, x, y))
+                p.setWeight(0.0f);
             else
-            {
-                mParticleSet.mParticles.get(i).weight = 0;
-            }
+                p.setPosition(x , y);
+
+
         }
+        Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
     }
 
-    public boolean wallCollision(int i, int x, int y)
+
+    public boolean wallCollision(Particle particle, int x, int y)
     {
-        Point p = new Point(mParticleSet.mParticles.get(i).x, mParticleSet.mParticles.get(i).y);
-        if(!crossedWall(new Point(x, y), mParticleSet.mParticles.get(i))
-                && mParticleSet.mFloor.contains(p) && !outOfBound(p.x, p.y))
+        if(!crossedWall(new Point(x,y), particle.getPosition()) && !outOfBound(x, y))
             return false;
         else
             return true;
     }
 
-    private boolean crossedWall(Point new_point, Particle old_particle)
+    private boolean crossedWall(Point new_point, Point old_point)
     {
-        int x_high = 0;
-        int x_low = 0;
-        int y_high = 0;
-        int y_low = 0;
-
-        if(new_point.x < old_particle.x)
+        for (Line wall : mParticleSet.mWalls)
         {
-            x_high = old_particle.x;
-            x_low = new_point.x;
+            if (wall.intersectsWithLine(new_point, old_point))
+                return true;
         }
-        else
-        {
-            x_high = new_point.x;
-            x_low = old_particle.x;
-        }
-
-        if(new_point.y < old_particle.y)
-        {
-            y_high = old_particle.y;
-            y_low = new_point.y;
-        }
-        else
-        {
-            y_high = new_point.y;
-            y_low = old_particle.y;
-        }
-
-        for (Point point : mParticleSet.mWalls)
-        {
-          if(point.x < x_high && point.x > x_low
-            && point.y < y_high && point.y > y_low)
-          {
-              return true;
-          }
-        }
-
         return false;
     }
 
@@ -139,7 +187,7 @@ public class ParticleFilter {
 
     public void removeParticle(int i)
     {
-        Log.wtf(tag, "Remove Particle");
+        //Log.wtf(tag, "Remove Particle");
         mParticleSet.mParticles.remove(i);
     }
 }
