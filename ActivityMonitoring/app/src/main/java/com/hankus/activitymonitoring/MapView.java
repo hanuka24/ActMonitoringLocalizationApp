@@ -55,7 +55,7 @@ public class MapView extends View {
 
         for (Particle p: mParticleSet.mParticles
              ) {
-            canvas.drawCircle(p.getX(), p.getY(), p.getWeight() * mParticleSet.NUM_PARTICLES, mPaint);
+            canvas.drawCircle(p.getX(), p.getY(), 1, mPaint);
         }
         canvas.drawCircle(mParticleSet.posX, mParticleSet.posY, 3, mPaintPos);
 

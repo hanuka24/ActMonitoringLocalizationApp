@@ -27,21 +27,22 @@ public class Walls {
         Line Wall12 = new Line( new Point(419, 161), new Point( 419, 118));
         Line Wall13 = new Line( new Point(175, 118), new Point( 419, 118));
         Line Wall14 = new Line( new Point(175, 118), new Point( 175, 161));
-        Line Wall15 = new Line( new Point(154, 161), new Point( 175, 161));
-        Line Wall16 = new Line( new Point(154, 161), new Point( 154, 117));
-        Line Wall17 = new Line( new Point(86, 118), new Point( 154, 117));
+        Line Wall15 = new Line( new Point(155, 161), new Point( 175, 161));
+        Line Wall16 = new Line( new Point(155, 161), new Point( 155, 117));
+        Line Wall17 = new Line( new Point(86, 118), new Point( 155, 117));
         Line Wall18 = new Line( new Point(86, 118), new Point( 86, 161));
         Line Wall19 = new Line( new Point(2, 161), new Point( 86, 161));
         Line Wall20 = new Line( new Point(2, 161), new Point( 437, 161));
         Line Wall21 = new Line( new Point(2, 161), new Point( 2, 105));
+        Line Wall22 = new Line( new Point(221, 105), new Point(221, 118));
 
         //Tables
-        Line Wall22 = new Line( new Point(20, 159), new Point( 20, 120));
-        Line Wall23 = new Line( new Point(35, 159), new Point( 35, 120));
-        Line Wall24 = new Line( new Point(20, 120), new Point( 35, 120));
-        Line Wall25 = new Line( new Point(55, 159), new Point( 55, 120));
-        Line Wall26 = new Line( new Point(70,  159), new Point( 70, 120));
-        Line Wall27 = new Line( new Point(55, 120), new Point( 70, 120));
+        Line Wall23 = new Line( new Point(20, 159), new Point( 20, 120));
+        Line Wall24 = new Line( new Point(35, 159), new Point( 35, 120));
+        Line Wall25 = new Line( new Point(20, 120), new Point( 35, 120));
+        Line Wall26 = new Line( new Point(55, 159), new Point( 55, 120));
+        Line Wall27 = new Line( new Point(70,  159), new Point( 70, 120));
+        Line Wall28 = new Line( new Point(55, 120), new Point( 70, 120));
 
 
         mWalls.add(Wall1);
@@ -71,6 +72,7 @@ public class Walls {
         mWalls.add(Wall25);
         mWalls.add(Wall26);
         mWalls.add(Wall27);
+        mWalls.add(Wall28);
 
     }
 

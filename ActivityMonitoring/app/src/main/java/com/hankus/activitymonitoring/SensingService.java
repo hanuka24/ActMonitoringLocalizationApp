@@ -273,12 +273,17 @@ public class SensingService extends Service implements SensorEventListener {
 
         Collections.sort(mOrientations);
 
-        float middle;
+        float middle = 0f;
         if (mOrientations.size()%2 == 1) {
             middle = (mOrientations.get(mOrientations.size()/2) + mOrientations.get(mOrientations.size()/2 - 1))/2;
         } else {
             middle = mOrientations.get(mOrientations.size() / 2);
         }
+//        for(int i = 0; i < mOrientations.size(); i++)
+//        {
+//            middle += mOrientations.get(i);
+//        }
+//        middle /= mOrientations.size();
         return middle;
     }
 

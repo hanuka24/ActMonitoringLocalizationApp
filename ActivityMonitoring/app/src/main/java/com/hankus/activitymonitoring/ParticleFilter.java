@@ -40,10 +40,11 @@ public class ParticleFilter {
         {
             int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
             int num_old_particles = mParticleSet.mParticles.size();
+            updateWeight();
 
             for(int i = 0; i < num_new_particle; i++) {
                 Random r = new Random();
-                if(r.nextFloat() < 0.05f)
+                if(r.nextFloat() < 0.001f)
                     mParticleSet.addParticle(mParticleSet.createRandomParticle());
                 else
                     mParticleSet.addParticle(mParticleSet.createRandomValidParticle());

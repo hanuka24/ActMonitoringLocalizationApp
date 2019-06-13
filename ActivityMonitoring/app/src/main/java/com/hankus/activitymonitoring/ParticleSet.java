@@ -54,7 +54,14 @@ public class ParticleSet {
     public Particle createRandomValidParticle()
     {
         Random r = new Random();
-        Particle p =  mParticles.get(r.nextInt(mParticles.size() - 1));
+        int random_int = 0;
+        do
+        {
+            random_int = r.nextInt(mParticles.size() - 1);
+        } while(mParticles.get(r.nextInt(mParticles.size() - 1)).getWeight() == (1 / NUM_PARTICLES));
+
+        Particle p =  mParticles.get(random_int);
+
         return new Particle(p);
     }
 
