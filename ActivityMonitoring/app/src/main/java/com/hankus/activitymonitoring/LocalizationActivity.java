@@ -23,7 +23,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     private String tag;
 
     private ParticleSet mParticles;
-    float mOrientation;
+    float mOrientation = 0.f;
     int mSteps;
 
     private TextView mOrientationText;
@@ -112,7 +112,6 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
        else
         new ComputeStep().execute(); //apply particle filter in AsyncTask
     }
-
 
 
     @Override
