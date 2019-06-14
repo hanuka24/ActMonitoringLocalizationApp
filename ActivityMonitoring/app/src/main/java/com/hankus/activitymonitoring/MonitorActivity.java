@@ -116,6 +116,13 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     }
 
     @Override
+    public void onStop()
+    {
+        super.onStop();
+        mSensorManager.unregisterListener(this, mSensorAcc);
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
         //read sensor data and store to file
         double x = event.values[0];

@@ -1,6 +1,7 @@
 package com.hankus.activitymonitoring;
 
 import android.graphics.Point;
+import android.provider.Telephony;
 import android.util.Log;
 
 import java.lang.reflect.Array;
@@ -54,13 +55,12 @@ public class ParticleSet {
     public Particle createRandomValidParticle()
     {
         Random r = new Random();
-        int random_int = 0;
+        Particle p;
+        //select only particles, which have survived
         do
         {
-            random_int = r.nextInt(mParticles.size() - 1);
-        } while(mParticles.get(r.nextInt(mParticles.size() - 1)).getWeight() == (1 / NUM_PARTICLES));
-
-        Particle p =  mParticles.get(random_int);
+            p = mParticles.get(r.nextInt(mParticles.size() - 1));
+        } while(p.getWeight() == (1 / NUM_PARTICLES));
 
         return new Particle(p);
     }
@@ -73,10 +73,10 @@ public class ParticleSet {
         mParticles.add(particle);
     }
 
-    public void doParticleFilter(float stepwidth, float direction)
+    public void doParticleFilter(int stepwidth, float direction)
     {
         mParticleFilter.moveParticles(stepwidth, direction);
-       // mParticleFilter.updateWeight();
+        mParticleFilter.updateWeight();
         mParticleFilter.sense();
         mParticleFilter.resampling();
         mParticleFilter.positioning();

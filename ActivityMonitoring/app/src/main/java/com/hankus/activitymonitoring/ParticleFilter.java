@@ -13,8 +13,8 @@ public class ParticleFilter {
     private String tag = "ParticleFilter";
     private ParticleSet mParticleSet;
 
-    public int ORIENTATION_VARIANCE = 30; //degrees
-    public double STEPWIDTH_VARIANCE = 0.5; //m
+    public int ORIENTATION_VARIANCE = 20; //degrees
+    public double STEPWIDTH_VARIANCE = 0.2; //m
     public double STEPWIDTH = 0.6; //m
 
 
@@ -40,7 +40,6 @@ public class ParticleFilter {
         {
             int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
             int num_old_particles = mParticleSet.mParticles.size();
-            updateWeight();
 
             for(int i = 0; i < num_new_particle; i++) {
                 Random r = new Random();
@@ -114,7 +113,7 @@ public class ParticleFilter {
         }
     }
 
-    public void moveParticles(float steps, float direction) //move particles and remove if they move on wall
+    public void moveParticles(int steps, float direction) //move particles and remove if they move on wall
     {
         for(Particle p : mParticleSet.mParticles)
         {

@@ -33,7 +33,7 @@ public class Features implements Comparable< Features >{
 
     public ArrayList<Double> getFeaturesArray()
     {
-        return new ArrayList<Double>(Arrays.asList(x_mean, y_mean, z_mean, min, max, frequency));
+        return new ArrayList<Double>(Arrays.asList(x_mean, y_mean, z_mean, min, max));
     }
 
     @Override

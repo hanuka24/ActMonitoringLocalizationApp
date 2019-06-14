@@ -26,7 +26,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
     private ParticleSet mParticles;
     float mOrientation = 0.f;
-    float mSteps;
+    int mSteps;
 
     private TextView mOrientationText;
     private TextView mTextDebug;
@@ -71,7 +71,6 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         serviceIntent = new Intent(LocalizationActivity.this, SensingService.class);
         startService(serviceIntent); //Starting the service
         bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE); //Binding to the service!
-        mServiceBound = true;
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -84,6 +83,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
             SensingService.LocalBinder binder = (SensingService.LocalBinder) service;
             sensingService = binder.getServiceInstance(); //Get instance of your service!
             sensingService.registerClient(LocalizationActivity.this); //Activity register in the service as client for callabcks!
+            mServiceBound = true;
 
         }
 
@@ -116,7 +116,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
 
     @Override
-    public void makeStep(float steps, float direction)
+    public void makeStep(int steps, float direction)
     {
        Log.wtf(tag, "Movement detected, move particles");
        mStepCountText.setText(getResources().getString(R.string.step_count, steps));
@@ -158,8 +158,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void updateActivity(String activity)
     {
         mTextDebug.setText(activity);
-        if(activity == "IDLE")
-            mStepCountText.setText(getResources().getString(R.string.step_count, 0.0f));
+        //if(activity == "IDLE")
+        //    mStepCountText.setText(getResources().getString(R.string.step_count, 0.0f));
     }
 
     private void moveSinglePoint()

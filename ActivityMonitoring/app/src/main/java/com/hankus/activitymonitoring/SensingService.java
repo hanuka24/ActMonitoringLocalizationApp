@@ -88,7 +88,7 @@ public class SensingService extends Service implements SensorEventListener {
         {
             mWasWalking = false;
             Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((float)mWalkingTime/(float)STEPTIME, getOrientationMedian() + mOrientationOffset);
+            activity.makeStep((int)(mWalkingTime/STEPTIME), getOrientationMedian() + mOrientationOffset);
         }
         else
             startMonitoring();
@@ -162,7 +162,7 @@ public class SensingService extends Service implements SensorEventListener {
 
     //callbacks interface for communication with service clients!
     public interface Callbacks{
-        public void makeStep(float steps, float direction);
+        public void makeStep(int steps, float direction);
         public void updateActivity(String activity);
     }
 
@@ -287,11 +287,14 @@ public class SensingService extends Service implements SensorEventListener {
         } else {
             middle = mOrientations.get(mOrientations.size() / 2);
         }
-//        for(int i = 0; i < mOrientations.size(); i++)
-//        {
-//            middle += mOrientations.get(i);
-//        }
-//        middle /= mOrientations.size();
+    /*    for(int i = 0; i < mOrientations.size(); i++)
+        {
+            middle += mOrientations.get(i);
+        }
+        middle /= mOrientations.size();*/
+        Log.wtf(tag, "Number of Orientation mesaurements: " + mOrientations.size());
+
+
         return middle;
     }
 
