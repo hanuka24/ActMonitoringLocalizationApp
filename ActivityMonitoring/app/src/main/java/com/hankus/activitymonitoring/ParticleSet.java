@@ -73,7 +73,7 @@ public class ParticleSet {
         mParticles.add(particle);
     }
 
-    public void doParticleFilter(int stepwidth, float direction)
+    public void doParticleFilter(float stepwidth, float direction)
     {
         mParticleFilter.moveParticles(stepwidth, direction);
        // mParticleFilter.updateWeight();

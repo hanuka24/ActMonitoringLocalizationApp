@@ -114,7 +114,7 @@ public class ParticleFilter {
         }
     }
 
-    public void moveParticles(int steps, float direction) //move particles and remove if they move on wall
+    public void moveParticles(float steps, float direction) //move particles and remove if they move on wall
     {
         for(Particle p : mParticleSet.mParticles)
         {
@@ -136,6 +136,7 @@ public class ParticleFilter {
     }
 
     //Compute position by computing the median of x/y coordinates of all particles
+    //TODO: count particles at same position, compute centroid of most dense particles or take highest
     public void positioning()
     {
         if(mParticleSet.mParticles.isEmpty())
