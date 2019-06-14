@@ -13,6 +13,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.sql.Connection;
@@ -24,9 +25,12 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     private MapView mapView;
     private String tag;
 
+    private ImageView mCompassView;
+    private int mCompassImageOffset = 90;
+
     private ParticleSet mParticles;
-    float mOrientation = 0.f;
-    int mSteps;
+    private float mOrientation = 0.f;
+    private int mSteps;
 
     private TextView mOrientationText;
     private TextView mTextDebug;
@@ -54,12 +58,12 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         findViewById(R.id.add_particle_button).setOnClickListener(this);
         findViewById(R.id.init_particles_button).setOnClickListener(this);
         findViewById(R.id.show_walls_button).setOnClickListener(this);
-        findViewById(R.id.set_orientation_button).setOnClickListener(this);
 
         //init TextViews
         mOrientationText = (TextView) findViewById(R.id.orientation);
         mTextDebug = (TextView) findViewById(R.id.localization_debug);
         mStepCountText = (TextView) findViewById(R.id.step_count);
+        mCompassView = (ImageView) findViewById(R.id.Compass);
 
         //init Particles
         mParticles = new ParticleSet();
@@ -126,7 +130,10 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
        if(mMoveSinglePoint)
            moveSinglePoint();
        else
-        new ComputeStep().execute(); //apply particle filter in AsyncTask
+       {
+           new ComputeStep().execute(); //apply particle filter in AsyncTask
+           mCompassView.setRotation(360 - (((mOrientation * 180f / (float) Math.PI)) + 360) % 360 - mCompassImageOffset);
+       }
     }
 
 

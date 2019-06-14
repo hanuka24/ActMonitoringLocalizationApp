@@ -150,8 +150,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     @Override
     protected void onStop() {
         super.onStop();
-        debug("Activity stopped");
-        //TODO: save state
+        mSensorManager.unregisterListener(this, mSensorAcc);
     }
 
     private void startMonitoring() {

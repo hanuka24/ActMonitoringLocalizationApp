@@ -8,27 +8,27 @@
 
     <Button
         android:id="@+id/show_walls_button"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="Show walls"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.101"
+        app:layout_constraintHorizontal_bias="0.106"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.954" />
 
     <Button
         android:id="@+id/init_particles_button"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="Init Particles"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.83" />
+        app:layout_constraintVertical_bias="0.843" />
 
     <com.hankus.activitymonitoring.MapView
         android:id="@+id/map_view"
@@ -42,9 +42,9 @@
 
     <Button
         android:id="@+id/add_particle_button"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:text="AddParticle"
+        android:text="Move Single Particle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -52,18 +52,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.759" />
 
-
-    <Button
-        android:id="@+id/set_orientation_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set orientation"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.855"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.759" />
 
     <TextView
         android:id="@+id/orientation"
@@ -79,26 +67,41 @@
 
     <TextView
         android:id="@+id/localization_debug"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
+        android:layout_marginTop="28dp"
         android:text="@string/localization_debug"
-        tools:layout_editor_absoluteX="176dp"
-        tools:layout_editor_absoluteY="333dp" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/step_count"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="60dp"
         android:text="@string/step_count"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
->>>>>>> 12a448dfce9289f83cafd3170665b4ebd1852133
+    <ImageView
+        android:id="@+id/Compass"
+        android:layout_width="34dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="103dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.763"
+        app:srcCompat="?attr/homeAsUpIndicator" />
+
+
 </android.support.constraint.ConstraintLayout>
