@@ -19,6 +19,7 @@ New App design with 3 activities:
 
    
 ### TODO
+- Record trainingset for accuary > 90%
 - Error handling; App closes handling etc. (App fixed to portrait mode, no need for landscape)
 - Improvement of classification: linearization/interpolating?
 #### Nice to have:
@@ -28,9 +29,12 @@ New App design with 3 activities:
 
 ## Localization
 ### Status
-We are going to implement the particle filter approach.
+Particle filter implemented
 ### TODO
-All!
+- Variable naming
+- Polishing (remove Set orientation, add arrow, rename add particle etc)
+- getter/setter instead of public members?
+- positioning?
 
 
 
