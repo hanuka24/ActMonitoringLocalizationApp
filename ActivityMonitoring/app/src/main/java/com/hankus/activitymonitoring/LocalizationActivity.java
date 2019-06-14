@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.sql.Connection;
+
 import static java.util.Arrays.sort;
 
 public class LocalizationActivity extends AppCompatActivity implements View.OnClickListener, SensingService.Callbacks {
@@ -32,8 +34,10 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
     Intent serviceIntent;
     SensingService sensingService;
+    boolean mServiceBound = false;
 
     boolean mMoveSinglePoint;
+
 
 
     @Override
@@ -79,6 +83,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
             SensingService.LocalBinder binder = (SensingService.LocalBinder) service;
             sensingService = binder.getServiceInstance(); //Get instance of your service!
             sensingService.registerClient(LocalizationActivity.this); //Activity register in the service as client for callabcks!
+            mServiceBound = true;
 
         }
 
@@ -97,7 +102,18 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_bot, R.anim.slide_in_top);
+
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mServiceBound)
+            unbindService(mConnection);
+        mServiceBound = false;
+        stopService(serviceIntent);
+    }
+
 
     @Override
     public void makeStep(int steps, float direction)
@@ -142,8 +158,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void updateActivity(String activity)
     {
         mTextDebug.setText(activity);
-        if(activity == "IDLE")
-            mStepCountText.setText(getResources().getString(R.string.step_count, 0));
+        //if(activity == "IDLE")
+        //    mStepCountText.setText(getResources().getString(R.string.step_count, 0.0f));
     }
 
     private void moveSinglePoint()
@@ -186,7 +202,5 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
-
-
 
 }

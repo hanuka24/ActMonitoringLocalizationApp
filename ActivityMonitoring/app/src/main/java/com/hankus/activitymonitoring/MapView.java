@@ -77,8 +77,8 @@ public class MapView extends View {
         mScaleX = mWidth *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getWidth();
         mScaleY = mHeight *  getResources().getDisplayMetrics().density / (float)((BitmapDrawable)background_image).getBitmap().getHeight();
 
-        mParticleSet.mScaleMeterY = mHeight * mScaleY / ( 2 * 18.0f); //appr 18 m height
-        mParticleSet.mScaleMeterX = mParticleSet.mScaleMeterY * mScaleX / mScaleY / 2;
+        mParticleSet.mScaleMeterY = mHeight * mScaleY / ( 2f * 18.0f); //appr 18 m height
+        mParticleSet.mScaleMeterX = mParticleSet.mScaleMeterY * mScaleX / mScaleY / 2f;
 
         Log.wtf(tag, "scaleX: " + mScaleX);
         Log.wtf(tag, "scaleX: " + mScaleY);

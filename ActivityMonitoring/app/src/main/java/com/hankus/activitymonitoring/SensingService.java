@@ -55,8 +55,6 @@ public class SensingService extends Service implements SensorEventListener {
     private float[] accels;
     private float[] orientationValues = {0f, 0f, 0f};
 
-
-
     private ArrayList<Float> mOrientations;
 
     Callbacks activity;
@@ -89,7 +87,7 @@ public class SensingService extends Service implements SensorEventListener {
         {
             mWasWalking = false;
             Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((int)mWalkingTime/STEPTIME, getOrientationMedian() + mOrientationOffset);
+            activity.makeStep((int)(mWalkingTime/STEPTIME), getOrientationMedian() + mOrientationOffset);
         }
         else
             startMonitoring();
@@ -117,6 +115,7 @@ public class SensingService extends Service implements SensorEventListener {
         accels = new float[3];
 
         start_time = 0;
+        state = "IDLE";
 
 
         variance = 0.0;
@@ -133,6 +132,14 @@ public class SensingService extends Service implements SensorEventListener {
         mSensorManager.registerListener(this, mSensorMag, SensorManager.SENSOR_DELAY_GAME);
 
         return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+       Log.wtf(tag, "onDestroy");
+       mSensorManager.unregisterListener(this, mSensorAcc);
+       mSensorManager.unregisterListener(this, mSensorMag);
     }
 
     @Override

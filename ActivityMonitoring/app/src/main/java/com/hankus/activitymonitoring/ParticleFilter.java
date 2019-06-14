@@ -13,8 +13,8 @@ public class ParticleFilter {
     private String tag = "ParticleFilter";
     private ParticleSet mParticleSet;
 
-    public int ORIENTATION_VARIANCE = 30; //degrees
-    public double STEPWIDTH_VARIANCE = 0.5; //m
+    public int ORIENTATION_VARIANCE = 20; //degrees
+    public double STEPWIDTH_VARIANCE = 0.2; //m
     public double STEPWIDTH = 0.6; //m
 
 
@@ -107,6 +107,7 @@ public class ParticleFilter {
      * Compute position by computing the median of x/y coordinates of all particles
      * with a higher weight than the initial weight.
      */
+//TODO: count particles at same position, compute centroid of most dense particles or take highest
     public void positioning()
     {
         if(mParticleSet.mParticles.isEmpty())
@@ -118,11 +119,8 @@ public class ParticleFilter {
 
         for (Particle p: mParticleSet.mParticles)
         {
-            if(p.getWeight() != 1 / mParticleSet.NUM_PARTICLES)
-            {
-                x.add(p.getX());
-                y.add(p.getY());
-            }
+            x.add(p.getX());
+            y.add(p.getY());
         }
 
         Collections.sort(x);
