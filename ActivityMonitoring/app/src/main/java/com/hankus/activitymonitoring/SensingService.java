@@ -136,6 +136,14 @@ public class SensingService extends Service implements SensorEventListener {
     }
 
     @Override
+    public void onDestroy()
+    {
+       Log.wtf(tag, "onDestroy");
+       mSensorManager.unregisterListener(this, mSensorAcc);
+       mSensorManager.unregisterListener(this, mSensorMag);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }

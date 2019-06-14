@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.sql.Connection;
+
 import static java.util.Arrays.sort;
 
 public class LocalizationActivity extends AppCompatActivity implements View.OnClickListener, SensingService.Callbacks {
@@ -97,7 +99,16 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_bot, R.anim.slide_in_top);
+
     }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        unbindService(mConnection);
+        stopService(serviceIntent);
+    }
+
 
     @Override
     public void makeStep(int steps, float direction)
