@@ -13,36 +13,36 @@ public class Walls {
         mWalls = new ArrayList<>();
         mScaledWalls = new ArrayList<Line>();
 
-        Line Wall1 = new Line( new Point(2, 105), new Point( 154, 106));
-        Line Wall2 = new Line( new Point(154, 106), new Point( 154, 25));
-        Line Wall3 = new Line( new Point(154, 25), new Point( 175, 25));
-        Line Wall4 = new Line( new Point(175, 25), new Point( 175, 105));
-        Line Wall5 = new Line( new Point(175, 105), new Point( 402, 105));
+        Line Wall1 = new Line( new Point(2, 105), new Point( 154, 105));
+        Line Wall2 = new Line( new Point(154, 105), new Point( 154, 25));
+        Line Wall3 = new Line( new Point(154, 25), new Point( 176, 25));
+        Line Wall4 = new Line( new Point(176, 25), new Point( 176, 105));
+        Line Wall5 = new Line( new Point(176, 105), new Point( 402, 105));
         Line Wall6 = new Line( new Point(402, 105), new Point( 402, 66));
         Line Wall7 = new Line( new Point(418, 66), new Point( 402, 66));
         Line Wall8 = new Line( new Point(418, 66), new Point( 418, 25));
         Line Wall9 = new Line( new Point(438, 66), new Point( 418, 25));
         Line Wall10 = new Line( new Point(438, 25), new Point( 438, 161));
         Line Wall11 = new Line( new Point(419, 161), new Point( 438, 161));
-        Line Wall12 = new Line( new Point(419, 161), new Point( 419, 118));
-        Line Wall13 = new Line( new Point(175, 118), new Point( 419, 118));
-        Line Wall14 = new Line( new Point(175, 118), new Point( 175, 161));
-        Line Wall15 = new Line( new Point(155, 161), new Point( 175, 161));
-        Line Wall16 = new Line( new Point(155, 161), new Point( 155, 117));
-        Line Wall17 = new Line( new Point(86, 118), new Point( 155, 117));
-        Line Wall18 = new Line( new Point(86, 118), new Point( 86, 161));
+        Line Wall12 = new Line( new Point(419, 161), new Point( 419, 119));
+        Line Wall13 = new Line( new Point(176, 119), new Point( 419, 119));
+        Line Wall14 = new Line( new Point(176, 119), new Point( 176, 161));
+        Line Wall15 = new Line( new Point(155, 161), new Point( 176, 161));
+        Line Wall16 = new Line( new Point(155, 161), new Point( 155, 119));
+        Line Wall17 = new Line( new Point(86, 119), new Point( 155, 119));
+        Line Wall18 = new Line( new Point(86, 119), new Point( 86, 161));
         Line Wall19 = new Line( new Point(2, 161), new Point( 86, 161));
         Line Wall20 = new Line( new Point(2, 161), new Point( 437, 161));
         Line Wall21 = new Line( new Point(2, 161), new Point( 2, 105));
-        Line Wall22 = new Line( new Point(221, 105), new Point(221, 118));
+        Line Wall22 = new Line( new Point(221, 105), new Point(221, 119));
 
         //Tables
-        Line Wall23 = new Line( new Point(20, 159), new Point( 20, 120));
-        Line Wall24 = new Line( new Point(35, 159), new Point( 35, 120));
-        Line Wall25 = new Line( new Point(20, 120), new Point( 35, 120));
-        Line Wall26 = new Line( new Point(55, 159), new Point( 55, 120));
-        Line Wall27 = new Line( new Point(70,  159), new Point( 70, 120));
-        Line Wall28 = new Line( new Point(55, 120), new Point( 70, 120));
+        Line Wall23 = new Line( new Point(21, 161), new Point( 21, 121));
+        Line Wall24 = new Line( new Point(34, 161), new Point( 34, 121));
+        Line Wall25 = new Line( new Point(21, 121), new Point( 34, 121));
+        Line Wall26 = new Line( new Point(56, 161), new Point( 56, 121));
+        Line Wall27 = new Line( new Point(70,  161), new Point( 70, 121));
+        Line Wall28 = new Line( new Point(56, 121), new Point( 70, 121));
 
 
         mWalls.add(Wall1);

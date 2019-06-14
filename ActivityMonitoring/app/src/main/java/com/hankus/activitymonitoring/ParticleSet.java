@@ -43,6 +43,10 @@ public class ParticleSet {
     }
 
 
+    /**
+     * Creates a random particle on the floor.
+     * @return
+     */
     public Particle createRandomParticle()
     {
         Random r = new Random();
@@ -51,6 +55,11 @@ public class ParticleSet {
     }
 
 
+    /**
+     * Creates a random particle close to a particle that has a higher weight than it's
+     * initial weight.
+     * @return
+     */
     public Particle createRandomValidParticle()
     {
         Random r = new Random();
@@ -58,7 +67,7 @@ public class ParticleSet {
         do
         {
             random_int = r.nextInt(mParticles.size() - 1);
-        } while(mParticles.get(r.nextInt(mParticles.size() - 1)).getWeight() == (1 / NUM_PARTICLES));
+        } while(mParticles.get(random_int).getWeight() == (1 / NUM_PARTICLES));
 
         Particle p =  mParticles.get(random_int);
 
@@ -73,10 +82,14 @@ public class ParticleSet {
         mParticles.add(particle);
     }
 
+    /**
+     * Perform particle filter with current stepwidth
+     * @param stepwidth
+     * @param direction
+     */
     public void doParticleFilter(int stepwidth, float direction)
     {
         mParticleFilter.moveParticles(stepwidth, direction);
-       // mParticleFilter.updateWeight();
         mParticleFilter.sense();
         mParticleFilter.resampling();
         mParticleFilter.positioning();

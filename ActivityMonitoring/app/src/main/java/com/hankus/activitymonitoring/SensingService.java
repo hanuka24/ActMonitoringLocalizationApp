@@ -26,6 +26,7 @@ import static java.util.Arrays.sort;
 public class SensingService extends Service implements SensorEventListener {
 
     private String tag = "Sensing Service";
+    private String state;
 
     private AccData accSamples;
 
@@ -33,18 +34,20 @@ public class SensingService extends Service implements SensorEventListener {
     private Sensor mSensorAcc;
     private Sensor mSensorMag;
 
-    boolean mWasWalking;
-    long mWalkingTime;
+    private boolean mWasWalking;
 
     private double variance;
     private double standard_deviation;
     private double autocorrelation_max;
+
     private float idle_threshold;
     private float walking_threshold;
-    private String state;
-    long start_time;
+    private float mOrientationOffset;
 
-    int STEPTIME = 750; //ms
+    private long start_time;
+    private long mWalkingTime;
+
+    private int STEPTIME = 750; //ms
 
     private float[] Rotation;
     private float[] I;
@@ -52,13 +55,10 @@ public class SensingService extends Service implements SensorEventListener {
     private float[] accels;
     private float[] orientationValues = {0f, 0f, 0f};
 
-    float mOrientationOffset;
-    float mOrientation;
+
 
     private ArrayList<Float> mOrientations;
 
-    NotificationManager notificationManager;
-    NotificationCompat.Builder mBuilder;
     Callbacks activity;
     private final IBinder mBinder = new LocalBinder();
 
@@ -265,6 +265,13 @@ public class SensingService extends Service implements SensorEventListener {
         autocorrelation_max = autocorrelation[accData.size() - 1];
     }
 
+    /**
+     * Gets the median of the orientation measurements to ignore outliers.
+     * The mean was tried but it achieved worse results as orientation measurements
+     * while turning also had an effect on them.
+     *
+     * @return
+     */
 //https://stackoverflow.com/questions/41117879/problems-finding-median-of-arraylist/41118061
     public float getOrientationMedian(){
 
@@ -279,11 +286,7 @@ public class SensingService extends Service implements SensorEventListener {
         } else {
             middle = mOrientations.get(mOrientations.size() / 2);
         }
-//        for(int i = 0; i < mOrientations.size(); i++)
-//        {
-//            middle += mOrientations.get(i);
-//        }
-//        middle /= mOrientations.size();
+
         return middle;
     }
 

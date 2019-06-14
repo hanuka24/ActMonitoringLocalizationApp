@@ -23,6 +23,9 @@ public class ParticleFilter {
         this.mParticleSet = particleSet;
     }
 
+    /**
+     * Removes all particles that run into walls (weight = 0).
+     */
     public void sense()
     {
         for (int i = mParticleSet.mParticles.size() - 1; i >= 0; i--)
@@ -34,12 +37,16 @@ public class ParticleFilter {
         }
     }
 
+    /**
+     * Resampling replaces the amount of particles that ran into a wall.
+     * A small chance is randomly placed on the floor.
+     * The majority is randomly placed around particles that have survived at least one round (higher weight).
+     */
     public void resampling()
     {
         if(! mParticleSet.mParticles.isEmpty())
         {
             int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
-            int num_old_particles = mParticleSet.mParticles.size();
             updateWeight();
 
             for(int i = 0; i < num_new_particle; i++) {
@@ -50,56 +57,11 @@ public class ParticleFilter {
                     mParticleSet.addParticle(mParticleSet.createRandomValidParticle());
             }
         }
-
-     //https://www.codeproject.com/Articles/865934/Object-Tracking-Particle-Filter-with-Ease
-      /*  Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
-        if(! mParticleSet.mParticles.isEmpty()) {
-
-
-            ArrayList<Particle> new_particles = new ArrayList<Particle>(mParticleSet.NUM_PARTICLES);
-
-            // compute cumulative weights
-            float cum_weights[] = new float[mParticleSet.NUM_PARTICLES];
-            float cum_sum = 0.0f;
-            cum_weights[0] = 0.0f;
-
-
-            for (int i = 1; i < mParticleSet.NUM_PARTICLES; i++) {
-                cum_weights[i] = cum_weights[i - 1] + mParticleSet.mParticles.get(i).getWeight();
-            }
-
-            Random rng = new Random();
-            // double p_step = 1.0 / Ns; // probability step size for resampling (new sample weight)
-            float init_weight = 1.0f / mParticleSet.NUM_PARTICLES;
-            float p_resample = (rng.nextFloat() - 1) * init_weight;
-            int cdf_idx = 0;
-
-            for (int i = 0; i < mParticleSet.NUM_PARTICLES; i++) {
-
-                p_resample += init_weight;
-
-                if(rng.nextFloat() < 0.05f)
-                    new_particles.add(mParticleSet.createRandomParticle());
-                else
-                {
-                    while (cdf_idx < (mParticleSet.NUM_PARTICLES - 1) && (p_resample > cum_weights[cdf_idx] ||
-                            mParticleSet.mParticles.get(cdf_idx).getWeight() == 0.0f)) {
-                        cdf_idx++;
-                    }
-
-                    if (mParticleSet.mParticles.get(cdf_idx).getWeight() == 0.0f) {
-
-                        new_particles.add(mParticleSet.createRandomParticle());
-                        Log.wtf(tag, "Last element weight is 0");
-                    } else
-                        new_particles.add(new Particle(mParticleSet.mParticles.get(cdf_idx).getPosition(), init_weight));
-                }
-            }
-            mParticleSet.mParticles = new_particles;
-        }*/
     }
 
-    //only necessary if we resample with cdf
+    /**
+     * Increase weight of surviving particles
+     */
     public void updateWeight()
     {
         float sum_weight = 0.0f;
@@ -114,6 +76,12 @@ public class ParticleFilter {
         }
     }
 
+    /**
+     * Particles are moved if they do not cross walls, if they do, their weight is set to 0.
+     *
+     * @param steps number of measured steps
+     * @param direction the median orientation
+     */
     public void moveParticles(int steps, float direction) //move particles and remove if they move on wall
     {
         for(Particle p : mParticleSet.mParticles)
@@ -135,7 +103,10 @@ public class ParticleFilter {
         Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
     }
 
-    //Compute position by computing the median of x/y coordinates of all particles
+    /**
+     * Compute position by computing the median of x/y coordinates of all particles
+     * with a higher weight than the initial weight.
+     */
     public void positioning()
     {
         if(mParticleSet.mParticles.isEmpty())
@@ -145,10 +116,13 @@ public class ParticleFilter {
         ArrayList<Integer> y = new ArrayList<>(mParticleSet.NUM_PARTICLES);
 
 
-        for (Particle p: mParticleSet.mParticles
-             ) {
-            x.add(p.getX());
-            y.add(p.getY());
+        for (Particle p: mParticleSet.mParticles)
+        {
+            if(p.getWeight() != 1 / mParticleSet.NUM_PARTICLES)
+            {
+                x.add(p.getX());
+                y.add(p.getY());
+            }
         }
 
         Collections.sort(x);
@@ -159,6 +133,14 @@ public class ParticleFilter {
 
     }
 
+    /**
+     * Checks if a particle moves through a wall by drawing a line between the new position
+     * and the old one and tries to find an intersection with the wall (line).
+     *
+     * @param new_point position the particle would move to next
+     * @param old_point last position of particle
+     * @return
+     */
     private boolean crossedWall(Point new_point, Point old_point)
     {
         for (Line wall : mParticleSet.mWalls)
@@ -169,7 +151,11 @@ public class ParticleFilter {
         return false;
     }
 
-
+    /**
+     * Removes particles from the list.
+     *
+     * @param i index of particle
+     */
     public void removeParticle(int i)
     {
         //Log.wtf(tag, "Remove Particle");

@@ -19,6 +19,13 @@ public class Line {
         endPoint = new Point(x_end, y_end);
     }
 
+    /**
+     * Tries to find an intersection pont between two lines.
+     *
+     * @param start start point of line
+     * @param end end point of line
+     * @return
+     */
     //https://gist.github.com/coleww/9403691
     public boolean intersectsWithLine(Point start, Point end) {
         float bx = (float) (endPoint.x- startPoint.x);
