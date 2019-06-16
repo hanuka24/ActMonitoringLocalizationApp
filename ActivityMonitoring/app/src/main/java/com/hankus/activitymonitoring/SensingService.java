@@ -1,7 +1,6 @@
 package com.hankus.activitymonitoring;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,24 +10,19 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 import static java.util.Arrays.sort;
 
 public class SensingService extends Service implements SensorEventListener {
 
-    private String tag = "Sensing Service";
-    private String state;
+    private String mTag = "Sensing Service";
+    private String mState;
 
-    private AccData accSamples;
+    private AccData mAccSamples;
 
     private SensorManager mSensorManager;
     private Sensor mSensorAcc;
@@ -36,34 +30,34 @@ public class SensingService extends Service implements SensorEventListener {
 
     private boolean mWasWalking;
 
-    private double variance;
-    private double standard_deviation;
-    private double autocorrelation_max;
+    private double mVariance;
+    private double mStandardDeviation;
+    private double mAutocorrelationMax;
 
-    private float idle_threshold;
-    private float walking_threshold;
+    private float mIdleThreshold;
+    private float mWalkingThreshold;
     private float mOrientationOffset;
 
-    private long start_time;
+    private long mStartTime;
     private long mWalkingTime;
 
-    private int STEPTIME = 750; //ms
+    private int mSteptime = 750; //ms
 
-    private float[] Rotation;
-    private float[] I;
+    private float[] mRotation;
+    private float[] mI;
     private float[] mags;
-    private float[] accels;
-    private float[] orientationValues = {0f, 0f, 0f};
+    private float[] mAccels;
+    private float[] mOrientationValues = {0f, 0f, 0f};
 
     private ArrayList<Float> mOrientations;
 
-    Callbacks activity;
+    Callbacks mActivity;
     private final IBinder mBinder = new LocalBinder();
 
 
     public void startMonitoring()
     {
-        accSamples.clear();
+        mAccSamples.clear();
         mSensorManager.registerListener(this, mSensorAcc,
                 SensorManager.SENSOR_DELAY_GAME);
     }
@@ -74,20 +68,20 @@ public class SensingService extends Service implements SensorEventListener {
 
 
         //check for movement
-        accSamples.extractFeatures();
-        double mean = calculateXYZMean(accSamples.features.x_mean, accSamples.features.y_mean, accSamples.features.z_mean);
+        mAccSamples.extractFeatures();
+        double mean = calculateXYZMean(mAccSamples.mFeatures.mMeanX, mAccSamples.mFeatures.mMeanY, mAccSamples.mFeatures.mMeanZ);
         calculateStandardDeviation(mean);
         calculateAutocorrelation(mean);
         checkMovement();
 
-        variance = 0.0;
-        standard_deviation = 0.0;
+        mVariance = 0.0;
+        mStandardDeviation = 0.0;
 
-        if(state.equals("IDLE") && mWasWalking)
+        if(mState.equals("IDLE") && mWasWalking)
         {
             mWasWalking = false;
-            Log.wtf(tag, "Walked for " + mWalkingTime + "ms");
-            activity.makeStep((int)(mWalkingTime/STEPTIME), getOrientationMedian() + mOrientationOffset);
+            Log.wtf(mTag, "Walked for " + mWalkingTime + "ms");
+            mActivity.makeStep((int)(mWalkingTime/ mSteptime), getOrientationMedian() + mOrientationOffset);
         }
         else
             startMonitoring();
@@ -99,7 +93,7 @@ public class SensingService extends Service implements SensorEventListener {
 
         //Do what you need in onStartCommand when service has been started
 
-        accSamples = new AccData();
+        mAccSamples = new AccData();
         mOrientations = new ArrayList<>();
 
         //init Sensor
@@ -107,23 +101,23 @@ public class SensingService extends Service implements SensorEventListener {
         mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorMag = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-        Log.wtf(tag, "onStartCommand");
+        Log.wtf(mTag, "onStartCommand");
 
-        Rotation = new float[16];
-        I = new float[16];
+        mRotation = new float[16];
+        mI = new float[16];
         mags = new float[3];
-        accels = new float[3];
+        mAccels = new float[3];
 
-        start_time = 0;
-        state = "IDLE";
+        mStartTime = 0;
+        mState = "IDLE";
 
 
-        variance = 0.0;
-        standard_deviation = 0.0;
-        autocorrelation_max = 0.0;
-        idle_threshold = 0.8f;
-        walking_threshold = 0.7f;
-        state = "Debug";
+        mVariance = 0.0;
+        mStandardDeviation = 0.0;
+        mAutocorrelationMax = 0.0;
+        mIdleThreshold = 0.8f;
+        mWalkingThreshold = 0.7f;
+        mState = "Debug";
         mWasWalking = false;
 
         mOrientationOffset = 1.95f;
@@ -137,7 +131,7 @@ public class SensingService extends Service implements SensorEventListener {
     @Override
     public void onDestroy()
     {
-       Log.wtf(tag, "onDestroy");
+       Log.wtf(mTag, "onDestroy");
        mSensorManager.unregisterListener(this, mSensorAcc);
        mSensorManager.unregisterListener(this, mSensorMag);
     }
@@ -156,7 +150,7 @@ public class SensingService extends Service implements SensorEventListener {
 
     //Here Activity register to the service as Callbacks client
     public void registerClient(Activity activity){
-        this.activity = (Callbacks)activity;
+        this.mActivity = (Callbacks)activity;
     }
 
     //callbacks interface for communication with service clients!
@@ -179,23 +173,23 @@ public class SensingService extends Service implements SensorEventListener {
                 double y = event.values[1];
                 double z = event.values[2];
 
-                accels = event.values.clone();
+                mAccels = event.values.clone();
 
-                if(accSamples.getSize() < 40)//accSamples.getNumberOfSamples())
-                    accSamples.addSample(x,y,z, 0);
+                if(mAccSamples.getSize() < 40)//mAccSamples.getNumberOfSamples())
+                    mAccSamples.addSample(x,y,z, 0);
                 else
                     stopMonitoring();
                 break;
         }
 
-        if (mags!=null && accels!=null) {
-            boolean success =  SensorManager.getRotationMatrix(Rotation, I, accels, mags);
+        if (mags!=null && mAccels !=null) {
+            boolean success =  SensorManager.getRotationMatrix(mRotation, mI, mAccels, mags);
             if(success)
             {
-                SensorManager.getOrientation(Rotation, orientationValues);
-                mOrientations.add(-orientationValues[0]);
+                SensorManager.getOrientation(mRotation, mOrientationValues);
+                mOrientations.add(-mOrientationValues[0]);
                 mags = null;
-                accels = null;
+                mAccels = null;
             }
         }
     }
@@ -213,46 +207,46 @@ public class SensingService extends Service implements SensorEventListener {
 
     private void checkMovement()
     {
-        // System.out.println("Standard Deviation " + standard_deviation);
-        // System.out.println("Autocorrelation " + autocorrelation_max);
-        if(standard_deviation < idle_threshold)
+        // System.out.println("Standard Deviation " + mStandardDeviation);
+        // System.out.println("Autocorrelation " + mAutocorrelationMax);
+        if(mStandardDeviation < mIdleThreshold)
         {
-            activity.updateActivity("IDLE");
-            if(!state.equals("IDLE"))
+            mActivity.updateActivity("IDLE");
+            if(!mState.equals("IDLE"))
             {
-                state = "IDLE";
-                mWalkingTime = System.currentTimeMillis() - start_time;
-                start_time = 0;
+                mState = "IDLE";
+                mWalkingTime = System.currentTimeMillis() - mStartTime;
+                mStartTime = 0;
                 mWasWalking = true;
             }
             else
              mOrientations.clear();
         }
-        else if(autocorrelation_max > walking_threshold && !state.equals("WALKING"))
+        else if(mAutocorrelationMax > mWalkingThreshold && !mState.equals("WALKING"))
         {
-            activity.updateActivity("WALKING");
-            state = "WALKING";
-            start_time = System.currentTimeMillis();
+            mActivity.updateActivity("WALKING");
+            mState = "WALKING";
+            mStartTime = System.currentTimeMillis();
         }
     }
 
 
     private void calculateStandardDeviation(double mean)
     {
-        ArrayList<AccDataSample> accData = accSamples.accData;
+        ArrayList<AccDataSample> accData = mAccSamples.mAccData;
 
         double sum = 0.0;
         for(int i = 0; i < accData.size() - 1; i++)
         {
             sum += Math.pow(accData.get(i).getSum() - mean, 2);
         }
-        variance = sum / accData.size();
-        standard_deviation = Math.sqrt(variance);
+        mVariance = sum / accData.size();
+        mStandardDeviation = Math.sqrt(mVariance);
     }
 
     private void calculateAutocorrelation(double mean)
     {
-        ArrayList<AccDataSample> accData = accSamples.accData;
+        ArrayList<AccDataSample> accData = mAccSamples.mAccData;
 
         double [] temp = new double[accData.size()];
         double [] m = new double[accData.size()];
@@ -265,11 +259,11 @@ public class SensingService extends Service implements SensorEventListener {
                 temp[h] = temp[h] + Math.pow(accData.get(h + t).getSum() - mean, 2);
                 m[h] = temp[h] / accData.size();
             }
-            autocorrelation[h] = m[h] / variance;
+            autocorrelation[h] = m[h] / mVariance;
         }
 
         sort(autocorrelation);
-        autocorrelation_max = autocorrelation[accData.size() - 1];
+        mAutocorrelationMax = autocorrelation[accData.size() - 1];
     }
 
     /**

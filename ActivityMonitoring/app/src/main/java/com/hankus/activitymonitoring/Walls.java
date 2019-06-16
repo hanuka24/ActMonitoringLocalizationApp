@@ -87,8 +87,8 @@ public class Walls {
         mScaledWalls.clear();
         for (Line w: mWalls
         ) {
-            mScaledWalls.add(new Line((int)(w.startPoint.x * scale_x), (int)(w.startPoint.y * scale_y),
-                    (int)(w.endPoint.x * scale_x), (int)(w.endPoint.y * scale_y)));
+            mScaledWalls.add(new Line((int)(w.mStartPoint.x * scale_x), (int)(w.mStartPoint.y * scale_y),
+                    (int)(w.mEndPoint.x * scale_x), (int)(w.mEndPoint.y * scale_y)));
         }
     }
 }

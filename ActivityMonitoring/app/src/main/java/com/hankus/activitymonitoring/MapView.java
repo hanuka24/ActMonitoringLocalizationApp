@@ -1,31 +1,22 @@
 package com.hankus.activitymonitoring;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.provider.CalendarContract;
-import android.provider.Telephony;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
-
 public class MapView extends View {
 
     private Paint mPaint;
     private Paint mPaintPos;
-    private String tag = "MapView";
+    private String mTag = "MapView";
     private ParticleSet mParticleSet;
 
     public float mScaleY;
@@ -57,7 +48,7 @@ public class MapView extends View {
              ) {
             canvas.drawCircle(p.getX(), p.getY(), 1, mPaint);
         }
-        canvas.drawCircle(mParticleSet.posX, mParticleSet.posY, 3, mPaintPos);
+        canvas.drawCircle(mParticleSet.mPosX, mParticleSet.mPosY, 3, mPaintPos);
 
     }
 
@@ -66,7 +57,7 @@ public class MapView extends View {
         mWidth = w;
         mHeight = h;
         //init Map, once the size is known
-        Log.wtf(tag, "Width = " + w + "; Height = " + h);
+        Log.wtf(mTag, "Width = " + w + "; Height = " + h);
         initMap();
     }
 
@@ -80,10 +71,10 @@ public class MapView extends View {
         mParticleSet.mScaleMeterY = mHeight * mScaleY / ( 2f * 18.0f); //appr 18 m height
         mParticleSet.mScaleMeterX = mParticleSet.mScaleMeterY * mScaleX / mScaleY / 2f;
 
-        Log.wtf(tag, "scaleX: " + mScaleX);
-        Log.wtf(tag, "scaleX: " + mScaleY);
-        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterX);
-        Log.wtf(tag, "ScaleMeter: " + mParticleSet.mScaleMeterY);
+        Log.wtf(mTag, "scaleX: " + mScaleX);
+        Log.wtf(mTag, "scaleX: " + mScaleY);
+        Log.wtf(mTag, "ScaleMeter: " + mParticleSet.mScaleMeterX);
+        Log.wtf(mTag, "ScaleMeter: " + mParticleSet.mScaleMeterY);
 
         Bitmap background = Bitmap.createScaledBitmap(((BitmapDrawable)background_image).getBitmap(), mWidth, mHeight, true);
         this.setBackground(new BitmapDrawable(getResources(), background));
@@ -124,22 +115,22 @@ public class MapView extends View {
         mParticleSet.mParticles.clear();
         for(Line p : mParticleSet.mWalls)
         {
-            if(p.startPoint.x == p.endPoint.x)
+            if(p.mStartPoint.x == p.mEndPoint.x)
             {
-                int y_start = (p.startPoint.y > p.endPoint.y) ? p.endPoint.y : p.startPoint.y;
-                int y_end = (p.startPoint.y > p.endPoint.y) ? p.startPoint.y : p.endPoint.y;
+                int y_start = (p.mStartPoint.y > p.mEndPoint.y) ? p.mEndPoint.y : p.mStartPoint.y;
+                int y_end = (p.mStartPoint.y > p.mEndPoint.y) ? p.mStartPoint.y : p.mEndPoint.y;
                 for(int i = 0; i < y_end - y_start; i++)
-                    mParticleSet.mParticles.add(new Particle((int)((float)p.startPoint.x), (int)((float)(y_start + i)), 1.0f / mParticleSet.NUM_PARTICLES));
+                    mParticleSet.mParticles.add(new Particle((int)((float)p.mStartPoint.x), (int)((float)(y_start + i)), 1.0f / mParticleSet.mNumParticles));
             }
-            else if(p.startPoint.y == p.endPoint.y)
+            else if(p.mStartPoint.y == p.mEndPoint.y)
             {
-                int x_start = (p.startPoint.x > p.endPoint.x) ? p.endPoint.x : p.startPoint.x;
-                int x_end = (p.startPoint.x > p.endPoint.x) ? p.startPoint.x : p.endPoint.x;
+                int x_start = (p.mStartPoint.x > p.mEndPoint.x) ? p.mEndPoint.x : p.mStartPoint.x;
+                int x_end = (p.mStartPoint.x > p.mEndPoint.x) ? p.mStartPoint.x : p.mEndPoint.x;
                 for(int i = 0; i < x_end - x_start; i++)
-                    mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.startPoint.y), 1.0f / mParticleSet.NUM_PARTICLES));
+                    mParticleSet.mParticles.add(new Particle((int)((float)(x_start + i)), (int)((float)p.mStartPoint.y), 1.0f / mParticleSet.mNumParticles));
             }
             else
-                Log.wtf(tag, "Invalid wall");
+                Log.wtf(mTag, "Invalid wall");
         }
     }
 

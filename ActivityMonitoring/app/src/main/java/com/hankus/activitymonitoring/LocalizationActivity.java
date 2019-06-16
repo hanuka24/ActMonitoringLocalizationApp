@@ -7,23 +7,18 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.sql.Connection;
 
 import static java.util.Arrays.sort;
 
 public class LocalizationActivity extends AppCompatActivity implements View.OnClickListener, SensingService.Callbacks {
 
-    private MapView mapView;
-    private String tag;
+    private MapView mMapView;
+    private String mTag;
 
     private ImageView mCompassView;
     private int mCompassImageOffset = 90;
@@ -36,8 +31,8 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     private TextView mTextDebug;
     private TextView mStepCountText;
 
-    Intent serviceIntent;
-    SensingService sensingService;
+    Intent mServiceIntent;
+    SensingService mSensingService;
     boolean mServiceBound = false;
 
     boolean mMoveSinglePoint;
@@ -49,10 +44,10 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_localization);
 
-        tag = "Localization Activity";
+        mTag = "Localization Activity";
 
         //init Background map
-        mapView = findViewById(R.id.map_view);
+        mMapView = findViewById(R.id.map_view);
 
         //init Buttons
         findViewById(R.id.add_particle_button).setOnClickListener(this);
@@ -67,14 +62,14 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         //init Particles
         mParticles = new ParticleSet();
-        mapView.setParticleSet(mParticles);
+        mMapView.setParticleSet(mParticles);
 
         mMoveSinglePoint = false;
 
         //Start sensing
-        serviceIntent = new Intent(LocalizationActivity.this, SensingService.class);
-        startService(serviceIntent); //Starting the service
-        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE); //Binding to the service!
+        mServiceIntent = new Intent(LocalizationActivity.this, SensingService.class);
+        startService(mServiceIntent); //Starting the service
+        bindService(mServiceIntent, mConnection, Context.BIND_AUTO_CREATE); //Binding to the service!
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -82,18 +77,18 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            Log.wtf(tag, "onServiceConnected called");
+            Log.wtf(mTag, "onServiceConnected called");
             // We've binded to LocalService, cast the IBinder and get LocalService instance
             SensingService.LocalBinder binder = (SensingService.LocalBinder) service;
-            sensingService = binder.getServiceInstance(); //Get instance of your service!
-            sensingService.registerClient(LocalizationActivity.this); //Activity register in the service as client for callabcks!
+            mSensingService = binder.getServiceInstance(); //Get instance of your service!
+            mSensingService.registerClient(LocalizationActivity.this); //Activity register in the service as client for callabcks!
             mServiceBound = true;
 
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.wtf(tag, "onServiceDisconnected called");
+            Log.wtf(mTag, "onServiceDisconnected called");
         }
     };
 
@@ -115,14 +110,14 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         if(mServiceBound)
             unbindService(mConnection);
         mServiceBound = false;
-        stopService(serviceIntent);
+        stopService(mServiceIntent);
     }
 
 
     @Override
     public void makeStep(int steps, float direction)
     {
-       Log.wtf(tag, "Movement detected, move particles");
+       Log.wtf(mTag, "Movement detected, move particles");
        mStepCountText.setText(getResources().getString(R.string.step_count, steps));
        mOrientationText.setText(getResources().getString(R.string.orientation, direction * 180 / Math.PI));
        mOrientation = direction;
@@ -143,19 +138,19 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
             case R.id.add_particle_button:
                 mParticles.clear();
                 Particle start = mParticles.createRandomParticle();
-                mParticles.posY = start.getY();
-                mParticles.posX = start.getX();
+                mParticles.mPosY = start.getY();
+                mParticles.mPosX = start.getX();
                 mMoveSinglePoint = true;
-                mapView.update();
+                mMapView.update();
                 break;
             case R.id.init_particles_button:
                 mParticles.initParticles();
-                mapView.update();
+                mMapView.update();
                 mMoveSinglePoint = false;
                 break;
             case R.id.show_walls_button:
-                mapView.drawWalls();
-                mapView.update();
+                mMapView.drawWalls();
+                mMapView.update();
                 break;
             default:
                     break;
@@ -165,20 +160,20 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
     public void updateActivity(String activity)
     {
         mTextDebug.setText(activity);
-        //if(activity == "IDLE")
+        //if(mActivity == "IDLE")
         //    mStepCountText.setText(getResources().getString(R.string.step_count, 0.0f));
     }
 
     private void moveSinglePoint()
     {
-        mParticles.posX = mParticles.posX  + (int)(mSteps * mParticles.mParticleFilter.STEPWIDTH*mParticles.mScaleMeterX * Math.sin((double) mOrientation));
-        mParticles.posY = mParticles.posY  + (int)(mSteps * mParticles.mParticleFilter.STEPWIDTH*mParticles.mScaleMeterY * Math.cos((double) mOrientation));
+        mParticles.mPosX = mParticles.mPosX + (int)(mSteps * mParticles.mParticleFilter.mStepwidth *mParticles.mScaleMeterX * Math.sin((double) mOrientation));
+        mParticles.mPosY = mParticles.mPosY + (int)(mSteps * mParticles.mParticleFilter.mStepwidth *mParticles.mScaleMeterY * Math.cos((double) mOrientation));
 
-        Log.wtf(tag, "Position X: " + mParticles.posX);
-        Log.wtf(tag, "Position Y: " + mParticles.posY);
+        Log.wtf(mTag, "Position X: " + mParticles.mPosX);
+        Log.wtf(mTag, "Position Y: " + mParticles.mPosY);
 
-        mapView.update();
-        sensingService.startMonitoring();
+        mMapView.update();
+        mSensingService.startMonitoring();
     }
 
     private class ComputeStep extends AsyncTask<Void, Void, Void> {
@@ -190,7 +185,7 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
         @Override
         protected Void doInBackground(Void ...params) {
 
-            Log.wtf(tag, "Start calculation");
+            Log.wtf(mTag, "Start calculation");
             mParticles.doParticleFilter(mSteps, mOrientation);
             return null;
         }
@@ -203,9 +198,9 @@ public class LocalizationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected void onPostExecute(Void params) {
-            Log.wtf(tag, "Performed calculation");
-            mapView.update();
-            sensingService.startMonitoring();
+            Log.wtf(mTag, "Performed calculation");
+            mMapView.update();
+            mSensingService.startMonitoring();
         }
 
     }

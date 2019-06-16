@@ -2,14 +2,11 @@ package com.hankus.activitymonitoring;
 
 import android.util.Pair;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 //Based on: https://github.com/wihoho/KNN/tree/master/src
 
@@ -24,14 +21,14 @@ public class KNN {
         int NumOfTrainingSet = trainingSet.size();
         assert K <= NumOfTrainingSet : "K is larger than the length of trainingSet!";
 
-        //Update KNN: take the case when testRecord has multiple neighbors with the same distance into consideration
+        //Update KNN: take the case when testRecord has multiple neighbors with the same mDistance into consideration
         //Solution: Update the size of container holding the neighbors
 
         EuclideanDistance dist = new EuclideanDistance();
 
         for (Features i : trainingSet
              ) {
-            i.distance = dist.getDistance(i.getFeaturesArray(), testRecord.getFeaturesArray());
+            i.mDistance = dist.getDistance(i.getFeaturesArray(), testRecord.getFeaturesArray());
         }
 
         Collections.sort(trainingSet);
@@ -57,18 +54,18 @@ public class KNN {
 
         for(int index = 0;index < num; index ++){
             Features temp = neighbors.get(index);
-            String key = temp.activity;
+            String key = temp.mActivity;
 
-            //if this classLabel does not exist in the HashMap, put <key, 1/(temp.distance)> into the HashMap
+            //if this classLabel does not exist in the HashMap, put <key, 1/(temp.mDistance)> into the HashMap
             if(!map.containsKey(key))
                // map.put(key, 1);
-                map.put(key, 1 / temp.distance);
+                map.put(key, 1 / temp.mDistance);
 
                 //else, update the HashMap by adding the weight associating with that key
             else{
                 double value = map.get(key);
               //  value += 1;
-                value += 1 / temp.distance;
+                value += 1 / temp.mDistance;
                 map.put(key, value);
             }
         }

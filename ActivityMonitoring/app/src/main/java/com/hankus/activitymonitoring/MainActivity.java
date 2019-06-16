@@ -11,13 +11,13 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String tag = "DEBUG - Main Activity:";
+    private String mTag = "DEBUG - Main Activity:";
 
     private TextView mTextDebug;
 
-    private Button msstartMonitoring;
-    private Button msstartTraining;
-    private Button msstartLocalization;
+    private Button mStartMonitoring;
+    private Button mStartTraining;
+    private Button mStartLocalization;
 
 
     @Override
@@ -28,13 +28,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextDebug = (TextView) findViewById(R.id.debug);
 
         //init Buttons
-        msstartMonitoring = findViewById(R.id.start_monitoring_button);
-        msstartTraining = findViewById(R.id.start_training_button);
-        msstartLocalization = findViewById(R.id.start_localization_activity);
+        mStartMonitoring = findViewById(R.id.start_monitoring_button);
+        mStartTraining = findViewById(R.id.start_training_button);
+        mStartLocalization = findViewById(R.id.start_localization_activity);
 
-        msstartMonitoring.setOnClickListener(this);
-        msstartTraining.setOnClickListener(this);
-        msstartLocalization.setOnClickListener(this);
+        mStartMonitoring.setOnClickListener(this);
+        mStartTraining.setOnClickListener(this);
+        mStartLocalization.setOnClickListener(this);
 
         debug("onCreate complete");
     }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void debug(String msg)
     {
-        Log.wtf(tag, msg);
+        Log.wtf(mTag, msg);
         mTextDebug.setText(msg);
     }
 }

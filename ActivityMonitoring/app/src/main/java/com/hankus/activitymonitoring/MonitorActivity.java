@@ -7,7 +7,6 @@ package com.hankus.activitymonitoring;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,25 +24,14 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.Object;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
 import static com.hankus.activitymonitoring.KNN.classify;
 import static com.hankus.activitymonitoring.KNN.findKNearestNeighbors;
@@ -53,12 +41,12 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private SensorManager mSensorManager;
     private Sensor mSensorAcc;
 
-    private String tag = "DEBUG - Monitor activity: ";
+    private String mTag = "DEBUG - Monitor mActivity: ";
 
-     private boolean continousMonitoring;
-    private AccData accSamples;
+     private boolean mContinousMonitoring;
+    private AccData mAccSamples;
 
-    private ArrayList<Features> trainingData;
+    private ArrayList<Features> mTrainingData;
 
     // TextViews to display current sensor values
     private TextView mTextWalkProb;
@@ -106,9 +94,9 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         mSensorAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         //init variables
-        continousMonitoring = false;
-        accSamples = new AccData();
-        trainingData = new ArrayList<Features>();
+        mContinousMonitoring = false;
+        mAccSamples = new AccData();
+        mTrainingData = new ArrayList<Features>();
 
         //load training data
         loadTrainingData();
@@ -131,10 +119,10 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
 
         long timestamp = Calendar.getInstance().getTimeInMillis();
 
-        mProgressBar.setProgress(accSamples.getSize() * 100 / accSamples.getNumberOfSamples());
+        mProgressBar.setProgress(mAccSamples.getSize() * 100 / mAccSamples.getNumberOfSamples());
 
-        if(accSamples.getSize() < accSamples.getNumberOfSamples())
-            accSamples.addSample(x,y,z, timestamp);
+        if(mAccSamples.getSize() < mAccSamples.getNumberOfSamples())
+            mAccSamples.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
     }
@@ -154,7 +142,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
                 break;
             case R.id.continous_monitoring_checkbox:
                 debug("Enable/disable continous monitoring");
-                continousMonitoring = !continousMonitoring;
+                mContinousMonitoring = !mContinousMonitoring;
                 break;
             default:
                 //do nothing
@@ -166,7 +154,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
     private void startMonitoring()
     {
         debug("Start monitoring");
-        accSamples.clear();
+        mAccSamples.clear();
         mStartMonitoringButton.setEnabled(false);
         mStartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_grey);
         mSensorManager.registerListener(this, mSensorAcc,
@@ -181,30 +169,30 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
         mStartMonitoringButton.setBackgroundResource(R.drawable.rounded_button_green);
         mSensorManager.unregisterListener(this, mSensorAcc);
         predictActivity();
-        if(continousMonitoring)
+        if(mContinousMonitoring)
             startMonitoring();
     }
 
 
     private void debug(String msg)
     {
-        Log.wtf(tag, msg);
+        Log.wtf(mTag, msg);
         mTextDebug.setText(msg);
     }
 
     private void predictActivity()
     {
-        accSamples.extractFeatures();
+        mAccSamples.extractFeatures();
 
-        ArrayList<Features> neighbors = findKNearestNeighbors(trainingData, accSamples.features, 3);
+        ArrayList<Features> neighbors = findKNearestNeighbors(mTrainingData, mAccSamples.mFeatures, 3);
 
         if(neighbors == null)
         {
             debug("Not enough trainingsdata is available");
         }else {
 
-            debug("Neighbor1: " + neighbors.get(0).activity + "\nNeighbor2: " + neighbors.get(1).activity
-                    + "\nNeighbor3: " + neighbors.get(2).activity);
+            debug("Neighbor1: " + neighbors.get(0).mActivity + "\nNeighbor2: " + neighbors.get(1).mActivity
+                    + "\nNeighbor3: " + neighbors.get(2).mActivity);
 
             Pair<String, HashMap<String, Double>> classification = classify(neighbors);
             String activity_pred = classification.first;
@@ -248,7 +236,7 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
                 double frequency = Double.parseDouble(featuresSplit[5]);
                 String activity = featuresSplit[6];
 
-                trainingData.add(new Features(mean_x, mean_y, mean_z, min, max, frequency, activity));
+                mTrainingData.add(new Features(mean_x, mean_y, mean_z, min, max, frequency, activity));
 
                 // read next line
                 line = reader.readLine();
@@ -258,8 +246,8 @@ public class MonitorActivity extends AppCompatActivity implements SensorEventLis
             e.printStackTrace();
         }
 
-        debug("Number of trainings samples: " +  String.valueOf(trainingData.size()));
-        for (Features f : trainingData
+        debug("Number of trainings samples: " +  String.valueOf(mTrainingData.size()));
+        for (Features f : mTrainingData
              ) {
         }
     }

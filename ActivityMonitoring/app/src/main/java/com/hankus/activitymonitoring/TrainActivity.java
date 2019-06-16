@@ -3,7 +3,6 @@ package com.hankus.activitymonitoring;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,11 +18,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,10 +29,10 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private SensorManager mSensorManager;
     private Sensor mSensorAcc;
 
-    private String tag = "DEBUG - Train activity: ";
-    private String currentActivity;
+    private String mTag = "DEBUG - Train mActivity: ";
+    private String mCurrentActivity;
 
-    private File currentFile;
+    private File mCurrentFile;
 
     // TextViews to display current sensor values
     private TextView mTextSensorAccX;
@@ -52,11 +48,11 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private Button mdeleteLatestButton;
     private Button mdeleteFile;
 
-    private boolean sensorEnabled;
+    private boolean mSensorEnabled;
 
-    private AccData accData;
+    private AccData mAccData;
 
-    private FileOutputStream fOutStream;
+    private FileOutputStream mfOutStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +93,14 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mdeleteFile.setOnClickListener(this);
 
         //init Variables
-        fOutStream = null;
-        currentActivity = "Unknown";
-        sensorEnabled = false;
+        mfOutStream = null;
+        mCurrentActivity = "Unknown";
+        mSensorEnabled = false;
 
         // set current file
         getCurrentFile();
 
-        accData = new AccData();
+        mAccData = new AccData();
 
         if (mSensorAcc == null) {
             mTextDebug.setText("Required sensor not available!");
@@ -129,8 +125,8 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         mTextSensorAccY.setText(getResources().getString(R.string.label_acc_y, y));
         mTextSensorAccZ.setText(getResources().getString(R.string.label_acc_z, z));
 
-        if(accData.getSize() < accData.getNumberOfSamples())
-            accData.addSample(x,y,z, timestamp);
+        if(mAccData.getSize() < mAccData.getNumberOfSamples())
+            mAccData.addSample(x,y,z, timestamp);
         else
             stopMonitoring();
     }
@@ -154,13 +150,13 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     }
 
     private void startMonitoring() {
-        if(!sensorEnabled) {
+        if(!mSensorEnabled) {
             debug("Start monitoring");
-            accData.clear();
+            mAccData.clear();
             setButtonText("begin");
             mSensorManager.registerListener(this, mSensorAcc,
                     SensorManager.SENSOR_DELAY_GAME);
-            sensorEnabled = true;
+            mSensorEnabled = true;
         }
     }
 
@@ -168,7 +164,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     {
         debug("Stop monitoring");
         mSensorManager.unregisterListener(this, mSensorAcc);
-        sensorEnabled = false;
+        mSensorEnabled = false;
         saveData();
         setButtonText("end");
     }
@@ -183,21 +179,21 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
         {
             background = R.drawable.rounded_button_blue;
         }
-        switch (currentActivity) {
+        switch (mCurrentActivity) {
             case "walking":
-                mstartWalkButton.setActivated(!sensorEnabled);
+                mstartWalkButton.setActivated(!mSensorEnabled);
                 mstartWalkButton.setBackgroundResource(background);
                 break;
             case "standing_up":
-                mstartStandButton.setActivated(!sensorEnabled);
+                mstartStandButton.setActivated(!mSensorEnabled);
                 mstartStandButton.setBackgroundResource(background);
                 break;
             case "sitting_down":
-                mstartSitButton.setActivated(!sensorEnabled);
+                mstartSitButton.setActivated(!mSensorEnabled);
                 mstartSitButton.setBackgroundResource(background);
                 break;
             case "idle":
-                mstartIdle.setActivated(!sensorEnabled);
+                mstartIdle.setActivated(!mSensorEnabled);
                 mstartIdle.setBackgroundResource(background);
                 break;
             default:
@@ -208,19 +204,19 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     private void saveData()
     {
         debug("Extract Features");
-        accData.extractFeatures();
+        mAccData.extractFeatures();
         debug("Compute String");
         String data_string = String.format(Locale.ENGLISH, "%f;%f;%f;%f;%f;%f;%s\n",
-                accData.features.min, accData.features.max, accData.features.x_mean, accData.features.y_mean, accData.features.z_mean,
-                accData.features.frequency, currentActivity);
+                mAccData.mFeatures.mMin, mAccData.mFeatures.mMax, mAccData.mFeatures.mMeanX, mAccData.mFeatures.mMeanY, mAccData.mFeatures.mMeanZ,
+                mAccData.mFeatures.mFrequency, mCurrentActivity);
         debug("Save Data");
-        if(currentFile == null)
+        if(mCurrentFile == null)
         {
             getCurrentFile();
         }
         try {
-            fOutStream = new FileOutputStream(currentFile, true);
-            fOutStream.write(data_string.getBytes());
+            mfOutStream = new FileOutputStream(mCurrentFile, true);
+            mfOutStream.write(data_string.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -229,19 +225,19 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
 
     private void closeFile()
     {
-        debug("Close File: " + currentFile.toString());
+        debug("Close File: " + mCurrentFile.toString());
         try {
-            fOutStream.flush();
-            fOutStream.close();
+            mfOutStream.flush();
+            mfOutStream.close();
         } catch (IOException e){
             e.printStackTrace();
         }
     }
 
     private void deleteLatestSample()  {
-        if(currentFile != null && currentFile.exists()) {
+        if(mCurrentFile != null && mCurrentFile.exists()) {
             try{
-                RandomAccessFile f = new RandomAccessFile(currentFile, "rw");
+                RandomAccessFile f = new RandomAccessFile(mCurrentFile, "rw");
                 long length = f.length() - 1;
                 byte b;
                 do {
@@ -253,7 +249,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
                 {
                     deleteFile();
                 }else{
-                    debug("Delete latest sample: " + currentFile.toString());
+                    debug("Delete latest sample: " + mCurrentFile.toString());
                     f.setLength(length+1);
                     f.close();
                 }
@@ -271,10 +267,10 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
 
     private void deleteFile()
     {
-        if(currentFile != null && currentFile.exists()) {
+        if(mCurrentFile != null && mCurrentFile.exists()) {
             debug("No more samples, deleted File!");
-            currentFile.delete();
-            currentFile = null;
+            mCurrentFile.delete();
+            mCurrentFile = null;
         }
         else
         {
@@ -289,19 +285,19 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
 
         switch (v.getId()) {
             case R.id.walk_button:
-                currentActivity = "walking";
+                mCurrentActivity = "walking";
                 startMonitoring();
                 break;
             case R.id.stand_up_button:
-                currentActivity = "standing_up";
+                mCurrentActivity = "standing_up";
                 startMonitoring();
                 break;
             case R.id.sit_down_button:
-                currentActivity = "sitting_down";
+                mCurrentActivity = "sitting_down";
                 startMonitoring();
                 break;
             case R.id.idle_button:
-                currentActivity = "idle";
+                mCurrentActivity = "idle";
                 startMonitoring();
                 break;
             case R.id.delete_latest:
@@ -319,7 +315,7 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
 
     private void debug(String msg)
     {
-        Log.wtf(tag, msg);
+        Log.wtf(mTag, msg);
         mTextDebug.setText(msg);
     }
 
@@ -332,6 +328,6 @@ public class TrainActivity extends AppCompatActivity implements SensorEventListe
     public void getCurrentFile()
     {
         String root = Environment.getExternalStorageDirectory().toString();
-        currentFile = new File (root, getResources().getString(R.string.file_name));
+        mCurrentFile = new File (root, getResources().getString(R.string.file_name));
     }
 }

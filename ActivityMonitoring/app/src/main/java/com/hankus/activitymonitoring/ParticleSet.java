@@ -1,18 +1,15 @@
 package com.hankus.activitymonitoring;
 
 import android.graphics.Point;
-import android.provider.Telephony;
 import android.util.Log;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class ParticleSet {
-    private String tag = "ParticleSet";
+    private String mTag = "ParticleSet";
 
-    public int NUM_PARTICLES = 6000;
+    public int mNumParticles = 6000;
 
     public ArrayList<Particle> mParticles;
     public ArrayList<Line> mWalls;
@@ -22,8 +19,8 @@ public class ParticleSet {
     public float mScaleMeterY;
     public ParticleFilter mParticleFilter;
 
-    public int posX;
-    public int posY;
+    public int mPosX;
+    public int mPosY;
 
     ParticleSet()
     {
@@ -31,14 +28,14 @@ public class ParticleSet {
         mFloor = new ArrayList<Point>();
         mParticles = new ArrayList<Particle>();
         mParticleFilter = new ParticleFilter(this);
-        posX = 0;
-        posY = 0;
+        mPosX = 0;
+        mPosY = 0;
     }
 
     public void initParticles()
     {
         mParticles.clear();
-        for (int i = 0; i < NUM_PARTICLES; i++) {
+        for (int i = 0; i < mNumParticles; i++) {
             addParticle(createRandomParticle());
         }
     }
@@ -52,7 +49,7 @@ public class ParticleSet {
     {
         Random r = new Random();
         Point p =  mFloor.get(r.nextInt(mFloor.size() - 1));
-        return new Particle(p, 1.0f / NUM_PARTICLES);
+        return new Particle(p, 1.0f / mNumParticles);
     }
 
 
@@ -69,7 +66,7 @@ public class ParticleSet {
         do
         {
             p = mParticles.get(r.nextInt(mParticles.size() - 1));
-        } while(p.getWeight() == (1 / NUM_PARTICLES));
+        } while(p.getWeight() == (1 / mNumParticles));
 
         return new Particle(p);
     }
@@ -78,7 +75,7 @@ public class ParticleSet {
 
     public void addParticle(Particle particle)
     {
-        //Log.wtf(tag, "Add Particle");
+        //Log.wtf(mTag, "Add Particle");
         mParticles.add(particle);
     }
 
@@ -98,7 +95,7 @@ public class ParticleSet {
 
     public void clear()
     {
-        Log.wtf(tag, "Clear all particles");
+        Log.wtf(mTag, "Clear all particles");
         mParticles.clear();
     }
 }

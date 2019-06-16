@@ -1,8 +1,6 @@
 package com.hankus.activitymonitoring;
 
-import android.graphics.Canvas;
 import android.graphics.Point;
-import android.provider.Telephony;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,12 +8,12 @@ import java.util.Collections;
 import java.util.Random;
 
 public class ParticleFilter {
-    private String tag = "ParticleFilter";
+    private String mTag = "ParticleFilter";
     private ParticleSet mParticleSet;
 
-    public int ORIENTATION_VARIANCE = 20; //degrees
-    public double STEPWIDTH_VARIANCE = 0.2; //m
-    public double STEPWIDTH = 0.6; //m
+    public int mOrientationVariance = 20; //degrees
+    public double mStepwidthVariance = 0.2; //m
+    public double mStepwidth = 0.6; //m
 
 
     public ParticleFilter(ParticleSet particleSet)
@@ -46,7 +44,7 @@ public class ParticleFilter {
     {
         if(! mParticleSet.mParticles.isEmpty())
         {
-            int num_new_particle = mParticleSet.NUM_PARTICLES - mParticleSet.mParticles.size();
+            int num_new_particle = mParticleSet.mNumParticles - mParticleSet.mParticles.size();
             updateWeight();
 
             for(int i = 0; i < num_new_particle; i++) {
@@ -86,11 +84,11 @@ public class ParticleFilter {
     {
         for(Particle p : mParticleSet.mParticles)
         {
-            double orientation_var = (new Random().nextInt(ORIENTATION_VARIANCE) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
-            double stepwidth_var = (new Random().nextDouble() * STEPWIDTH_VARIANCE * (new Random().nextBoolean() ? 1 : -1));
+            double orientation_var = (new Random().nextInt(mOrientationVariance) * (new Random().nextBoolean() ? 1 : -1) * Math.PI / 180f);
+            double stepwidth_var = (new Random().nextDouble() * mStepwidthVariance * (new Random().nextBoolean() ? 1 : -1));
 
-            int x = p.getX() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterX * Math.sin((double) direction + orientation_var));
-            int y = p.getY() + (int)(steps * (STEPWIDTH + stepwidth_var)*mParticleSet.mScaleMeterY * Math.cos((double) direction + orientation_var));
+            int x = p.getX() + (int)(steps * (mStepwidth + stepwidth_var)*mParticleSet.mScaleMeterX * Math.sin((double) direction + orientation_var));
+            int y = p.getY() + (int)(steps * (mStepwidth + stepwidth_var)*mParticleSet.mScaleMeterY * Math.cos((double) direction + orientation_var));
 
             //set Weight to zero, if physical constraints are violated
             //if(!mParticleSet.mFloor.contains(p.getPosition())) //slow approach with walls as pixels
@@ -100,11 +98,11 @@ public class ParticleFilter {
                 p.setPosition(x , y);
 
         }
-        Log.wtf(tag, "Number of Particles: " + mParticleSet.mParticles.size());
+        Log.wtf(mTag, "Number of Particles: " + mParticleSet.mParticles.size());
     }
 
     /**
-     * Compute position by computing the median of x/y coordinates of all particles
+     * Compute position by computing the median of mX/mY coordinates of all particles
      * with a higher weight than the initial weight.
      */
 //TODO: count particles at same position, compute centroid of most dense particles or take highest
@@ -113,8 +111,8 @@ public class ParticleFilter {
         if(mParticleSet.mParticles.isEmpty())
             return;
 
-        ArrayList<Integer> x = new ArrayList<>(mParticleSet.NUM_PARTICLES);
-        ArrayList<Integer> y = new ArrayList<>(mParticleSet.NUM_PARTICLES);
+        ArrayList<Integer> x = new ArrayList<>(mParticleSet.mNumParticles);
+        ArrayList<Integer> y = new ArrayList<>(mParticleSet.mNumParticles);
 
 
         for (Particle p: mParticleSet.mParticles)
@@ -126,8 +124,8 @@ public class ParticleFilter {
         Collections.sort(x);
         Collections.sort(y);
 
-        mParticleSet.posX = x.get(mParticleSet.NUM_PARTICLES / 2);
-        mParticleSet.posY = y.get(mParticleSet.NUM_PARTICLES / 2);
+        mParticleSet.mPosX = x.get(mParticleSet.mNumParticles / 2);
+        mParticleSet.mPosY = y.get(mParticleSet.mNumParticles / 2);
 
     }
 
@@ -156,7 +154,7 @@ public class ParticleFilter {
      */
     public void removeParticle(int i)
     {
-        //Log.wtf(tag, "Remove Particle");
+        //Log.wtf(mTag, "Remove Particle");
         mParticleSet.mParticles.remove(i);
     }
 }

@@ -2,20 +2,20 @@ package com.hankus.activitymonitoring;
 
 public class AccDataSample
 {
-    public double x;
-    public double y;
-    public double z;
-    public long timestamp;
+    public double mX;
+    public double mY;
+    public double mZ;
+    public long mTimestamp;
 
     public AccDataSample(double x, double y, double z, long timestamp) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.timestamp = timestamp;
+        this.mX = x;
+        this.mY = y;
+        this.mZ = z;
+        this.mTimestamp = timestamp;
     }
 
     public double getSum()
     {
-        return Math.sqrt(x*x + y*y + z*z);
+        return Math.sqrt(mX * mX + mY * mY + mZ * mZ);
     }
 }

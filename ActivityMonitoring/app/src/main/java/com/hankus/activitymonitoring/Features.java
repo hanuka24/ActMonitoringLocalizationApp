@@ -1,48 +1,47 @@
 package com.hankus.activitymonitoring;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Features implements Comparable< Features >{
-    public double x_mean;
-    public double y_mean;
-    public double z_mean;
-    public double min;
-    public double max;
-    public double frequency;
-    public String activity;
-    double distance;
-    public int numFeatures;
+    public double mMeanX;
+    public double mMeanY;
+    public double mMeanZ;
+    public double mMin;
+    public double mMax;
+    public double mFrequency;
+    public String mActivity;
+    double mDistance;
+    public int mNumFeatures;
 
     public Features(double x_mean, double y_mean, double z_mean, double min, double max, double frequency, String activity)
     {
-        this.numFeatures = 4;
-        this.x_mean = x_mean;
-        this.y_mean = y_mean;
-        this.z_mean = z_mean;
-        this.max = max;
-        this.min = min;
-        this.frequency = frequency;
-        this.activity = activity;
+        this.mNumFeatures = 4;
+        this.mMeanX = x_mean;
+        this.mMeanY = y_mean;
+        this.mMeanZ = z_mean;
+        this.mMax = max;
+        this.mMin = min;
+        this.mFrequency = frequency;
+        this.mActivity = activity;
     }
 
-    public double getDistance() {
-        return distance;
+    public double getmDistance() {
+        return mDistance;
     }
 
     public ArrayList<Double> getFeaturesArray()
     {
-        return new ArrayList<Double>(Arrays.asList(x_mean, y_mean, z_mean, min, max));
+        return new ArrayList<Double>(Arrays.asList(mMeanX, mMeanY, mMeanZ, mMin, mMax));
     }
 
     @Override
     public int compareTo(Features o) {
-        return new Double(distance).compareTo( o.distance);
+        return new Double(mDistance).compareTo( o.mDistance);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(distance);
+        return String.valueOf(mDistance);
     }
 }
