@@ -28,11 +28,6 @@ public class AccData {
         mAccData.clear();
     }
 
-    public void addSample(AccDataSample sample)
-    {
-        mAccData.add(sample);
-    }
-
     public void addSample(double x, double y, double z, long timestamp)
     {
         mAccData.add(new AccDataSample(x,y,z,timestamp));
@@ -54,8 +49,6 @@ public class AccData {
         ArrayList<Double> real = new ArrayList<>();
 
         smoothData();
-
-//        linearizeData();
 
         for(int i = 0; i < mAccData.size(); i++) {
 
@@ -97,59 +90,6 @@ public class AccData {
 
             mAccData.set(i, new AccDataSample(mean_x, mean_y, mean_z, mAccData.get(i).mTimestamp));
         }
-    }
-
-    private AccDataSample getSampleBefore(long timestamp)
-    {
-        int i = 0;
-        while(mAccData.get(i).mTimestamp < timestamp)
-            i++;
-        if(i == 0)
-            return mAccData.get(0);
-
-        return mAccData.get(i - 1);
-    }
-
-    private AccDataSample getSampleAfter(long timestamp)
-    {
-        int i = 0;
-        while(mAccData.get(i).mTimestamp < timestamp)
-            i++;
-        if(i == mAccData.size())
-            return mAccData.get(i - 1);
-
-        return mAccData.get(i);
-    }
-
-    private AccDataSample interpolate(long time)
-    {
-        AccDataSample start = getSampleBefore(time);
-        AccDataSample end = getSampleAfter(time);
-
-        double x = start.mX + (time - start.mTimestamp) * (end.mX - start.mX);
-        double y = start.mY + (time - start.mTimestamp) * (end.mY - start.mY);
-        double z = start.mZ + (time - start.mTimestamp) * (end.mZ - start.mZ);
-
-        return new AccDataSample(x,y,z, time);
-    }
-
-    private void linearizeData()
-    {
-        long start = mAccData.get(0).mTimestamp;
-        long end = mAccData.get(mAccData.size() - 1).mTimestamp;
-        long step_width = (end - start) / mNumSamples; //fixed length??
-
-        //start from time = 0
-        int count = 0;
-        for (AccDataSample i: mAccData) {
-            i.mTimestamp = i.mTimestamp - start;
-            mAccData.set(count, i);
-            count++;
-        }
-
-        for(int i = 0; i < mNumSamples; i++)
-            mAccData.set(i, interpolate(i*step_width));
-
     }
 
     private double getFrequency(ArrayList<Double> imaginary, ArrayList<Double> real)
