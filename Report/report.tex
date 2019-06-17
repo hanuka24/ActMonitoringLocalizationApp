@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
+\usepackage{enumitem}
 
 \pagestyle{fancy}
 
@@ -18,30 +19,35 @@
 \maketitle
 
 
-We have made one single App to perform activity monitoring and localization. 
-
 \section{Introduction}
 
-The aim of the course was to implement an Android app which utilizes and processes on-phone sensor data. 
+The aim of the course was to implement a smartphone app on Android, which utilizes and processes on-phone sensor data. 
 
-The source code is available on Github \cite{repo}.
+The source code is available on GitHub \cite{repo}.
 
 \section{Implementation}
 \subsection{Main App}
-We split the work in such a way that we could work mostly in separate classes to not interfere with each other too much when merging. However most of the time we still worked side by side and we always new what the other one was programming as we revised each others code together.
+We combined both tasks (activity monitoring and localization) into a single app. It consists of four activities:
+\begin{enumerate}
+	\item \textbf{MainActivity:} Shows the home screen, which appears at start of the app (see Figure \ref{fig:main}) and contains buttons to start the desired activity.
+	\item \textbf{TrainActivity:} Records and stores accelerometer data associated with desired activity, which is used during activity monitoring (see Section \ref{sec:train}).
+	\item \textbf{MonitorActivity:} Monitors and displays the user's current activity (see Section \ref{sec:monitoring}).
+	\item \textbf{LocalizationActivity:} Implementation of indoor localization using particle filter (see Section \ref{sec:localization}).
+\end{enumerate}
 
-\begin{center}
-  \includegraphics[width=140px]{images/main.jpeg}
-\end{center}
-
-\pagebreak
+\begin{figure}
+	\centering
+	\includegraphics[width=140px]{images/main.jpeg}
+	\caption{Home screen}
+	\label{fig:main}
+\end{figure}
 
 \subsection{Activity Monitoring}
 The Activity Monitoring is split into two activities, one collects training data and stores it into a file locally. The other activity monitors the sensors and uses the kNN algorithm to classify the user's motion.
 
 \subsubsection{Background: Activity monitoring using KNN}
 
-\subsubsection{Train Activity}
+\subsubsection{Train Activity} \label{sec:train}
 This activity enables the user to collect training data for the monitoring activity. 1 of 4 activities are currently implemented, however any activity can be trained, only the label would mismatch at the moment.
 \\
 The user needs to press one of the activities and perform the motion. The accelerometer data is sampled over a predefined window and the timestamp, mean of the x, y and z axis as well as the minimum and maximum of the euclidean distance is stores in a local .txt file. The most dominant frequency is also stored but it is currently not used as it lowers the recognition accuracy.
@@ -53,8 +59,8 @@ If a faulty measurement was recorded the user can delete the last entry or delet
 \end{center}
 
 \pagebreak
-
-\subsubsection{Monitoring}
+ 
+\subsubsection{Monitoring} \label{sec:monitoring}
 
 
 The second activity tries to classify the activity currently performed by the user. When the button is pressed, the accelerometer data is sampled with the same window size as the training data. 
@@ -75,20 +81,45 @@ When the "continuous monitoring" box is ticked, this prediction process (sample,
 
 %Python script, accuracy etc.
 
-\subsection{Localization}
-
-\begin{center}
-	\includegraphics[width=140px]{images/localization}
-\end{center}
+\subsection{Localization} \label{sec:localization}
 
 \subsubsection{Background: Particle Filter}
 
+
+
+
+
 \subsubsection{Implementation}
+\subsubsection*{GUI}
+As shown in Figure \ref{fig:localization}, the localization activity displays a map of the ITI building's first floor, text fields to report the users movement, an arrow indicating the user's current orientation and three buttons to 
+\begin{itemize}[noitemsep,topsep=0pt]
+	\item move a single particle
+	\item init particles and start localization
+	\item show the walls of the building on the map (mainly debug purposes)
+\end{itemize}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=140px]{images/localization.jpeg}
+	\caption{UI of localization activity}
+	\label{fig:localization}
+\end{figure}
+
+\subsubsection*{Movement detection}
+In order to detect the user's movement to create an appropriate movement model, we utilized the smartphone's build in accelerometer and magnetic sensor. The movement detection is implemented in a background service.
+
+The user's orientation is retrieved using the Android method \textit{getOrientation}. Since the value is quite inaccurate, the median value of the measurement while walking is used.
+
+To detect if the user started respectively stopped walking, the %TODOO: explain and cite reference (olga's page)
+
+\subsubsection*{Particle Filter parameterization}
+
 
 \subsubsection{Limitations/Challenges}
-%Compass
+The main challenge was the inaccuracy of the orienatation measurements. During the debugging process, we 
 \bibliographystyle{ieeetr}
 \bibliography{refs}
+
 
 
 \end{document}
