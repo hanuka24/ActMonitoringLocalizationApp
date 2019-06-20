@@ -40,6 +40,7 @@ We split the work in such a way that we could work mostly in separate classes to
 The Activity Monitoring is split into two activities, one collects training data and stores it into a file locally. The other activity monitors the sensors and uses the kNN algorithm to classify the user's motion.
 
 \subsubsection{Background: Activity monitoring using KNN}
+kNN is a very simple algorithm which finds the k nearest neighbour in a data set by calculation the euclidean distance between two points. The algorithm is fast and reasonably accurate if enough training data is available and if the k is set appropriately. Wen take the mean of each axis and calc
 
 \subsubsection{Train Activity}
 This activity enables the user to collect training data for the monitoring activity. 1 of 4 activities are currently implemented, however any activity can be trained, only the label would mismatch at the moment.
