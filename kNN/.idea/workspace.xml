@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d5a1ea18-b179-4681-b51c-bd319658aacc" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/ParticleSet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/SensingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/LocalizationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/LocalizationActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MapView.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/java/com/hankus/activitymonitoring/MapView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/res/layout/activity_localization.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ActivityMonitoring/app/src/main/res/layout/activity_localization.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data/Trainingsdata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Data/Trainingsdata.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/kNN.py" afterDir="false" />
-    </list>
+    <list default="true" id="d5a1ea18-b179-4681-b51c-bd319658aacc" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/kNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
+            <state relative-caret-position="45">
+              <caret line="11" selection-start-line="11" selection-end-line="12" />
             </state>
           </provider>
         </entry>
@@ -66,8 +56,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="x" value="1920" />
+    <option name="width" value="1857" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -76,17 +67,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="kNN" type="b2602c69:ProjectViewProjectNode" />
-              <item name="kNN" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -152,8 +133,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="63" y="27" width="1857" height="1053" extended-state="6" />
-    <editor active="true" />
+    <frame x="1983" y="27" width="1857" height="1053" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25790623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -192,8 +172,8 @@
     <entry file="file://$PROJECT_DIR$/data/walking_0.txt" />
     <entry file="file://$PROJECT_DIR$/kNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="18" column="60" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="60" />
+        <state relative-caret-position="45">
+          <caret line="11" selection-start-line="11" selection-end-line="12" />
         </state>
       </provider>
     </entry>

@@ -1,10 +1,16 @@
 # ActMonitoringLocalizationApp
 Activity monitoring and localization android app for mobile computing course
-## Activity Monitoring
-### Status
-New App design with 3 activities:
-1. Main activity (start up): Select either training or monitoring
-2. Train activity: Activity patterns walking, standing up, sitting down and idle are monitored
+
+## App
+The app consists of four activities:
+1. Main activity (start up): Select either training or monitoring for activity monitoring, or start localization
+2. Train activity: Train motions for activity monitoring
+3. Monitoring activity: Display current activity
+4. Localization activity: Indoor localization in ITI buildings' first floor
+
+### Activity Monitoring
+#### Status
+- Train activity: Activity patterns walking, standing up, sitting down and idle are monitored
     and the extracted features are saved into one file called "Trainingsdata.txt"
     Current features:
     - mean_x (Mean of x axis)
@@ -14,27 +20,22 @@ New App design with 3 activities:
     - max (Max of quadratic sum of all axes)
     - (fft)
     The current window size is 60 samples.
-3. Monitoring activity: At pressing "Start monitoring", one cycle (60 samples) of activity monitoring is executed.
-   Current Trainingsset (only 36 samples) gives an accuracy of 75%, but offline computation with more raw data samples gives an accuracy of 95%. Continouts monitoring is also possible by ticking the "Continous monitoring" check-box.
+*´- Monitoring activity: At pressing "Start monitoring", one cycle (60 samples) of activity monitoring is executed.
+   Current Trainingsset (only 36 samples) gives an accuracy of 80%, but offline computation with more raw data samples gives an accuracy of 95%. Continouts monitoring is also possible by ticking the "Continous monitoring" check-box.
 
-   
-### TODO
-- Record trainingset for accuary > 90%
-- Error handling; App closes handling etc. (App fixed to portrait mode, no need for landscape)
-- Improvement of classification: linearization/interpolating?
-#### Nice to have:
-- Scope of current accelerometer data
-- Polishing (pictures etc.)
-- Maybe we implement user defined activities
+### Localization
+#### Status
+- Indoor localization works quite well, with limitations due to inaccurate orientation sensing.
 
-## Localization
-### Status
-Particle filter implemented
-### TODO
-- Variable naming
-- Polishing (remove Set orientation, add arrow, rename add particle etc)
-- getter/setter instead of public members?
-- positioning?
+## Report
+The report can be found as .tex or .pdf file in the Report folder and contains information about both tasks (activity monitoring and localization)
+
+## KNN 
+In the KNN folder, a python script for offline activity classification can be found.
+
+
+## Data
+Contains a few sets of trainingsdata for activity monitoring
 
 
 

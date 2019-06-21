@@ -43,7 +43,7 @@ We combined both tasks (activity monitoring and localization) into a single app.
 \begin{figure}
 	\centering
 	\includegraphics[width=140px]{images/main.jpeg}
-	\caption{Home screen}
+	\caption{Home screen with three buttons to select desired activity.}
 	\label{fig:main}
 \end{figure}
 
@@ -55,7 +55,7 @@ The Activity Monitoring is split into two activities, one collects training data
 \\
 The \textbf{classification} is normally a simple majority vote of the neighbours labels. The new data point will receive the label that the majority of the k nearest neighbours have. We have modified this slightly as can be seen in \ref{sec:monitoring}.
 \\
-In order to monitor the activity via kNN, a feature set has to be chosen. Each feature is used in the calculate of the euclidean distance which relates to comparing the similarities of the new measurement (received from \ref{sec:monitoring}) point to the known data points (trained by \ref{sec:train}). The features can be varied and are up to the developer.
+In order to monitor the activity via kNN, accelerometer data has to be recorded for a desired time window and a feature set has to be chosen. Each feature is used in the calculate of the euclidean distance which relates to comparing the similarities of the new measurement (received from \ref{sec:monitoring}) point to the known data points (trained by \ref{sec:train}). The features can be varied and are up to the developer.
 
 \pagebreak
 
@@ -74,7 +74,7 @@ Our chosen feature set contains:
 \end{itemize}
 
 The user needs to press one of the activities and perform the motion. The accelerometer data is sampled 60 times with the android setting SENSOR DELAY GAME and  the activity label and the features are stored in a local .txt file.
-If a faulty measurement was recorded the user can delete the last entry or delete the whole .txt file in a csv format.
+If a faulty measurement was recorded the user can delete the last entry or delete the whole .txt file, which is stored in a csv format.
 
 \begin{figure}[h]
   \centering
@@ -113,7 +113,7 @@ A big challenge was to reach a high accuracy of correct activity predictions wit
 Furthermore our training data is self-obtained, meaning that it is comparatively small, making it more difficult to reach a highly precise prediction.
 \\\\
 \textbf{Python script}:\\
-We have made a python script which calculates the accuracy of our algorithm by checking how many predictions are actually true. It achieves around \(80\%\). The accuracy would be higher if we tried to predict more distinguishable motions rather than standing up and sitting down. For example running or jumping.
+We have made a python script which calculates the accuracy of our algorithm by checking how many predictions are actually true. It achieves around \(80\%\). The accuracy would be higher if we tried to predict more distinguishable motions rather than standing up and sitting down. For example running or jumping. Moreover, the accuracy is highly dependent on the size and quality of the trainings set.
 
 \subsection{Localization} \label{sec:localization}
 
@@ -141,7 +141,8 @@ As shown in Figure \ref{fig:localization}, the localization activity displays a 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=140px]{images/localization.jpeg}
+	\includegraphics[width=120px]{images/Localization1.jpg}	\includegraphics[width=120px]{images/Localization2.jpg}
+	\includegraphics[width=120px]{images/Localization3.jpg}
 	\caption{UI of localization activity. 1) Main screen after initializing. 2) After a few steps. 3) After convergence. }
 	\label{fig:localization}
 \end{figure}
@@ -149,8 +150,7 @@ As shown in Figure \ref{fig:localization}, the localization activity displays a 
 \subsubsection*{Movement detection}\label{sec:movement}
 In order to detect the user's movement to create an appropriate movement model, we utilized the smartphone's built-in accelerometer and magnetic sensor. The movement detection is implemented in a background service, similar to the implementation of \ref{sec:monitoring}.\\
 The user's orientation is retrieved using the Android method \textit{getOrientation}, which utilizes the acceloremeter and magentic sensor. Since the value is quite inaccurate, the median value of the measurement while walking is used.\\
-To detect if the user started respectively stopped walking, the %TODOO: explain and cite reference (olga's page)\\
-
+To detect if the user started respectively stopped walking, we record 40 samples of accelerometer data (sample rate = SENSOR DELAY GAME) periodically and extract the standard deviation and autocorrelation, as described in the lecture notes \cite{lecturenotes}. For appropriate results and correct distinctin between walking and idle we had to adjust the threshold values.\\
 The travelled distance was approximated by measuring the walking time and assuming a constant walking speed of the user.
 
 
@@ -165,6 +165,8 @@ In the following, we will give some details about the implementation of steps 1-
 	\item \textbf{Compute position:} To compute the final position, we calculate the median of x and y coordinates indepentendly. 
 \end{enumerate}
 
+The filter process is performed in an AsyncTask in order to prevent a working overload of the UI thread.
+
 \subsubsection{Limitations/Challenges}
 The main challenge was the inaccuracy of the orienatation measurements. During the debugging process, we discovered big problems when passing by metal doors or walls. Outdoors, it was much more accurate.
 
@@ -172,7 +174,7 @@ The main challenge was the inaccuracy of the orienatation measurements. During t
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
-The rest of theoratical content is based on the lecture notes (\url{https://github.com/osaukh/mobile_computing_lab/}). Other ressources related to the implementation can be found in the source code.
+The rest of theoratical content is based on the lecture notes \cite{lecturenotes}. Other ressources related to the implementation can be found in the source code.
 
 
 
